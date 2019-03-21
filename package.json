@@ -1,0 +1,41 @@
+{
+  "name": "AwesomeProject",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "startcli": "node node_modules/react-native/local-cli/cli.js start",
+    "start": "react-native run-android"
+  },
+  "dependencies": {
+    "native-base": "^2.12.1",
+    "react": "16.6.3",
+    "react-native": "0.58.6",
+    "react-native-background-timer": "^2.1.1",
+    "react-native-ble-plx": "^1.0.3",
+    "react-native-device-info": "^1.0.0",
+    "react-native-gesture-handler": "^1.1.0",
+    "react-native-image-picker": "^0.28.0",
+    "react-native-maps": "^0.23.0",
+    "react-native-navigation": "^2.13.1",
+    "react-native-sensors": "^5.1.7",
+    "react-native-vector-icons": "^6.3.0",
+    "react-native-wifi": "^1.0.1",
+    "react-navigation": "^3.3.2",
+    "react-redux": "^6.0.1",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "rxjs": "^6.4.0",
+    "uuid-v4": "^0.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "24.3.1",
+    "jest": "24.3.1",
+    "metro-react-native-babel-preset": "0.53.0",
+    "react-test-renderer": "16.6.3"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
