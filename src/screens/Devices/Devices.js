@@ -33,7 +33,7 @@ class DevicesScreen extends Component {
             console.log("there was an error scanning");
             console.log("error ->", error);
             console.log("device ->", device);
-            return
+            return;
         }
 
         this.collectDeviceData(device);

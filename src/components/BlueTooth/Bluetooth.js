@@ -24,6 +24,7 @@ class BLEdevices extends Component {
           console.log("---------------ble PoweredOn------------------");
         }
     }, true);
+    this.startScan();
   }
 
   startScan = () => {
@@ -33,7 +34,7 @@ class BLEdevices extends Component {
             console.log("there was an error scanning");
             console.log("error ->", error);
             console.log("device ->", device);
-            return
+            return;
         }
 
         this.collectDeviceData(device);
@@ -42,7 +43,7 @@ class BLEdevices extends Component {
 
     setTimeout(() => {
       this.stopScan();
-    }, 1100);
+    }, 1500);
   }
 
   stopScan = () => {
@@ -55,36 +56,42 @@ class BLEdevices extends Component {
         // console.log("Device id: ", device.id);
         // console.log("Device rssi: ", device.rssi);
         // console.log("Device mtu: ", device.mtu);
+        if ( !this.doesExsistInArray(this.state.devices, device.id )) {
+          // console.log(device.id + ": did not exsist in array");
+          let targetDeviceData = {
+            name: device.name,
+            id: device.id,
+            rssi: device.rssi,
+            mtu: device.mtu,
+            key: Math.random().toString()
+          }
+          this.setState(prevState => ({
+            devices: [...prevState.devices, targetDeviceData]
+          }))
 
-        let targetDeviceData = {
-          name: device.name,
-          id: device.id,
-          rssi: device.rssi,
-          mtu: device.mtu,
-          key: Math.random().toString()
         }
+        else {
+          console.log(device.id + ": ----------- exsist in array");
+        }
+        
+  }
 
-        this.setState(prevState => ({
-          devices: [...prevState.devices, targetDeviceData]
-        }))
-
+  doesExsistInArray = ( arry, target ) => {
+    let inArray = false;
+    for (i = 0; i < arry.length; i++) {
+      if(arry[i].id === target){
+        inArray = true;
+        break;
+      }
+    } 
+    return inArray;
   }
 
   deviceDataEl = (data) => {
-    console.log(data);
     return (
       <>
         <ListItem>
-          <Text>Name: {data.name || "No Name"}</Text>
-        </ListItem>
-        <ListItem>
-          <Text>- ID: {data.id}</Text>
-        </ListItem>
-        <ListItem>
-          <Text>- RSSI: {data.rssi}</Text>
-        </ListItem>
-        <ListItem>
-          <Text>- MTU: {data.mtu}</Text>
+          <Text>Name: {data.name || "No Name"} | ID: {data.id} | RSSI: {data.rssi} </Text>
         </ListItem>
       </>
     );
@@ -92,22 +99,17 @@ class BLEdevices extends Component {
 
   render() {
     return (
-        <>
+      <Content>
+        <Text>Number of devices detected: {this.state.devices.length} </Text>
+          {/* <Text>Bluetooth Devices Detected:</Text>
           <Button onPress={this.startScan} style={styles.mainButton}>
             <Text>Start Scan</Text>
           </Button>
-          <Button onPress={this.stopScan} style={styles.mainButton}>
-            <Text>Stop Scan</Text>
-          </Button>
-          <Text>Bluetooth Devices Detected:</Text>
-          <Content>
-
           <FlatList
             data={this.state.devices}
             renderItem={({item}) => this.deviceDataEl(item)}
-          />
-          </Content>
-        </>
+          /> */}
+      </Content>
     );
   }
 }

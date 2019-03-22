@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Container, Header, Content, Button, Text, ListItem } from 'native-base';
 import { StyleSheet, FlatList } from 'react-native';
 import { connect } from "react-redux";
-import PickLocation from "../../components/Location/LocationWithMap"
+import PickLocation from "../../components/Location/LocationWithMap";
 import { getPlaces } from "../../store/actions/index";
 
 class PlacesSreen extends Component {

@@ -9,7 +9,8 @@ const reducer = (state = initialState, action) => {
     case SET_DEVICES:
     console.log("set devices from device reducer");
       return {
-        ...state
+        ...state,
+        devices: action.devices
       };
     case REMOVE_DEVICE:
     console.log("remove device from device reducer");
