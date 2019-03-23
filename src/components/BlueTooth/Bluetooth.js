@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { Container, Header, Content, Button, Text, ListItem } from 'native-base';
 import { StyleSheet, FlatList } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
+import BackgroundTimer from 'react-native-background-timer';
+import { setDevices } from "../../store/actions/devices";
 const UUID = require("uuid-v4");
 const uuid = UUID();
 
@@ -24,7 +26,22 @@ class BLEdevices extends Component {
           console.log("---------------ble PoweredOn------------------");
         }
     }, true);
+
     this.startScan();
+    
+  }
+
+  startBGProcess = () => {
+    this.intervalId = BackgroundTimer.setInterval(() => {
+      // this will be executed even when app is the the background
+      console.log('----- scanning at interval --------');
+      this.startScan();
+      
+    }, (1000 * 3) * 5);
+  }
+
+  stopBGProcess = () => {
+    BackgroundTimer.clearInterval(this.intervalId);
   }
 
   startScan = () => {
@@ -101,11 +118,13 @@ class BLEdevices extends Component {
     return (
       <Content>
         <Text>Number of devices detected: {this.state.devices.length} </Text>
-          {/* <Text>Bluetooth Devices Detected:</Text>
-          <Button onPress={this.startScan} style={styles.mainButton}>
+          <Button onPress={this.startBGProcess} style={styles.mainButton}>
             <Text>Start Scan</Text>
           </Button>
-          <FlatList
+          <Button onPress={this.stopBGProcess} style={styles.mainButton}>
+            <Text>Stop Scan</Text>
+          </Button>
+          {/* <FlatList
             data={this.state.devices}
             renderItem={({item}) => this.deviceDataEl(item)}
           /> */}
@@ -116,7 +135,6 @@ class BLEdevices extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
   },
   mainButton: {
     fontSize: 20,
@@ -132,7 +150,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onLoadDevices: () => dispatch(getDevices())
+    onLoadDevices: () => dispatch(getDevices()),
+    setDevices: () => dispatch(setDevices(this.state.devices))
   };
 };
 
