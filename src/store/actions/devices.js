@@ -1,5 +1,27 @@
-import { SET_DEVICES, REMOVE_DEVICE, ADD_DEVICE } from './actionTypes';
+import { SET_DEVICES, REMOVE_DEVICE, ADD_SCAN, BLOCK_DEVICE } from './actionTypes';
 import { uiStartLoading, uiStopLoading, authGetToken } from './index';
+import { dispatch } from 'rxjs/internal/observable/range';
+import firebase from "../../services/firebase"
+
+export const addScan = (uuid, scan) => {
+  return dispatch => {
+    fetch("https://fb-rnplay.firebaseio.com/users.json", {
+      method: "POST",
+      body: JSON.stringify(scan)
+    })
+    .catch(err => {
+      console.log("add scan error: ", err);
+    })
+    .then(res => {
+      res.json();
+      console.log("res: ", res.json())
+    })
+    .then(parsedRes => {
+      console.log("----parsedRes--- ");
+      console.log(parsedRes);
+    })
+  };
+};
 
 export const getDevices = () => {
     // console.log("getting devices");
@@ -35,3 +57,4 @@ export const getDevices = () => {
       devices: arry,
     };
   };
+

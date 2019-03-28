@@ -8,12 +8,20 @@ getLocationHandler = () => {
           }
         }
       };
-      this.pickLocationHandler(coordsEvent);
+      return coordsEvent;
     },
-  err => {
-    console.log(err);
-    alert("Fetching the Position failed, please pick one manually!");
-  })
+    err => {
+      console.log(err);
+      return { error: "Fetching the Position failed, please pick one manually!"};
+    })
   };
+
+  locationChange = (previousLocation) => {
+    let currentLocation = this.getLocationHandler();
+    let isNewLocation = true;
+
+
+    return isNewLocation;
+  }
 
   export default getLocationHandler;

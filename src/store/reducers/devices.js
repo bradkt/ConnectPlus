@@ -1,4 +1,4 @@
-import { SET_DEVICES, REMOVE_DEVICE, ADD_DEVICE } from "../actions/actionTypes";
+import { SET_DEVICES, REMOVE_DEVICE, ADD_DEVICE, ADD_SCAN, BLOCK_DEVICE } from "../actions/actionTypes";
 import { AsyncStorage } from 'react-native';
 
 const initialState = {
@@ -18,6 +18,16 @@ const reducer = (state = initialState, action) => {
       };
     case REMOVE_DEVICE:
     console.log("remove device from device reducer");
+      return {
+        ...state
+      };
+    case ADD_SCAN:
+    console.log("add scan to fb");
+      return {
+        ...state
+      };
+    case BLOCK_DEVICE:
+    console.log("block device from data collection");
       return {
         ...state
       };

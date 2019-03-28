@@ -1,5 +1,3 @@
-// import React, { Component } from "react";
-// import { StyleSheet, FlatList } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
 import BackgroundTimer from 'react-native-background-timer';
 const UUID = require("uuid-v4");
@@ -10,13 +8,15 @@ class BLEservice {
     this.manager = new BleManager();
   }
 
-  state = {
-    devices: []
+  // state will eventually live in the reducer / firebase
+  bleState = {
+    devices: [],
+    isScanning: false
   };
 
   getCurrentBLEDevices = () => {
     console.log("getting devices")
-    return this.state.devices;
+    return this.bleState;
   }
 
   startBGProcess = () => {
@@ -40,6 +40,7 @@ class BLEservice {
       }
     }, true);
     this.manager.startDeviceScan(null, null, (error, device) => {
+        this.bleState.isScanning = true;
         if (error) {
             // Handle error (scanning will be stopped automatically)
             console.log("there was an error scanning ->", error);
@@ -54,6 +55,7 @@ class BLEservice {
 
   stopScan = () => {
     this.manager.stopDeviceScan();
+    this.bleState.isScanning = false;
     console.log("scanning stopped");
   }
 
@@ -62,7 +64,7 @@ class BLEservice {
         // console.log("Device id: ", device.id);
         // console.log("Device rssi: ", device.rssi);
         // console.log("Device mtu: ", device.mtu);
-        if ( !this.doesExsistInArray(this.state.devices, device.id )) {
+        if ( !this.doesExsistInArray(this.bleState.devices, device.id )) {
           // console.log(device.id + ": did not exsist in array");
           let targetDeviceData = {
             name: device.name,
@@ -70,7 +72,7 @@ class BLEservice {
             rssi: device.rssi,
             mtu: device.mtu,
           }
-          this.state.devices.push(targetDeviceData)
+          this.bleState.devices.push(targetDeviceData)
 
         }
         else {
