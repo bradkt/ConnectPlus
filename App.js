@@ -1,3 +1,12 @@
+// symbol polyfills
+global.Symbol = require('core-js/features/symbol');
+require('core-js/features/symbol/iterator');
+
+// collection fn polyfills
+require('core-js/features/map');
+require('core-js/features/set');
+require('core-js/features/array/find');
+
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Provider } from "react-redux"
