@@ -11,7 +11,6 @@ export const addScan = (uuid, scan) => {
     console.log(scan);
     console.log(getTime());
     return dispatch => {
-      
       fb.database().ref('users/' + uuid + "/" + getTime()).set(
         scan
       , function(error) {
