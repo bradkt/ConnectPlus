@@ -3,6 +3,10 @@ import { uiStartLoading, uiStopLoading, authGetToken } from './index';
 import { dispatch } from 'rxjs/internal/observable/range';
 import fb from "../../services/firebase"
 
+let getTime = () => {
+  return Date.now();
+}
+
 export const addScan = (uuid, scan) => {
   return dispatch => {
     console.log(scan);
