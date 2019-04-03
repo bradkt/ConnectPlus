@@ -18,6 +18,7 @@ export const addScan = (uuid, scan) => {
           console.log("data xfer success")
         }
       });
+    };
   };
 };
 

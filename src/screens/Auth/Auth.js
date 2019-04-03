@@ -24,7 +24,7 @@ class AuthScreen extends Component {
   };
 
   componentDidMount = () => {
-    
+    setLocationHandler();
     this.ble.startScan();
     setTimeout(() => {
       this.bledata();
@@ -39,12 +39,10 @@ class AuthScreen extends Component {
   }
 
   start = () => {
-    let macAddy = "AC:5F:3E:B2:C9:66";
-    // DeviceInfo.getMACAddress().then(mac => {
-    //   // "E5:12:D8:E5:69:97"
-    //   console.log(mac);
-    //   macAddy = mac;
-    // });
+    let macAddy = "";
+    DeviceInfo.getMACAddress().then(mac => {
+      macAddy = mac;
+    });
     let scan = this.ble.getCurrentBLEDevices();
     
     setTimeout(() => {
