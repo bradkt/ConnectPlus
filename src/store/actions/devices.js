@@ -1,25 +1,23 @@
 import { SET_DEVICES, REMOVE_DEVICE, ADD_SCAN, BLOCK_DEVICE } from './actionTypes';
 import { uiStartLoading, uiStopLoading, authGetToken } from './index';
 import { dispatch } from 'rxjs/internal/observable/range';
-import firebase from "../../services/firebase"
+import fb from "../../services/firebase"
 
 export const addScan = (uuid, scan) => {
   return dispatch => {
-    fetch("https://fb-rnplay.firebaseio.com/users.json", {
-      method: "POST",
-      body: JSON.stringify(scan)
-    })
-    .catch(err => {
-      console.log("add scan error: ", err);
-    })
-    .then(res => {
-      res.json();
-      console.log("res: ", res.json())
-    })
-    .then(parsedRes => {
-      console.log("----parsedRes--- ");
-      console.log(parsedRes);
-    })
+    console.log(scan);
+    console.log(getTime());
+    return dispatch => {
+      
+      fb.database().ref('users/' + uuid + "/" + getTime()).set(
+        scan
+      , function(error) {
+        if (error) {
+          console.log("error could not set data to fb: ", error)
+        } else {
+          console.log("data xfer success")
+        }
+      });
   };
 };
 
