@@ -7,20 +7,20 @@ let getTime = () => {
 }
 
 export const addScan = (uuid, scan) => {
+  console.log("uuid: ", uuid, "scan: ", scan);
+  console.log(getTime());
+  
+
   return dispatch => {
-    console.log("uuid: ", uuid, "scan: ", scan);
-    console.log(getTime());
-    return dispatch => {
-      fb.database().ref('users/' + uuid + "/" + getTime()).set(
-        scan
-      , function(error) {
-        if (error) {
-          console.log("error could not set data to fb: ", error)
-        } else {
-          console.log("data xfer success")
-        }
-      });
-    };
+    fb.database().ref('users/' + uuid + "/" + getTime()).set(
+      scan
+    , function(error) {
+      if (error) {
+        console.log("error could not set data to fb: ", error)
+      } else {
+        console.log("data xfer success")
+      }
+    });
   };
 };
 
