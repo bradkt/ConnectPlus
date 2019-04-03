@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { tryAuth, authAutoSignIn, addScan } from "../../store/actions/index";
 // import BLEdevices from "../../components/BlueTooth/Bluetooth";
 import BLEservice from "../../services/BlueTooth/Bluetooth";
+import setLocationHandler from "../../services/Location/Coordinates";
 import BackgroundTimer from 'react-native-background-timer';
 import locationService from "../../services/Location/Coordinates";
 import DeviceInfo from 'react-native-device-info';

@@ -1,4 +1,6 @@
-getLocationHandler = () => {
+import { setLocation } from "../../store/actions/location";
+
+setLocationHandler = () => {
     navigator.geolocation.getCurrentPosition(pos => {
       const coordsEvent = {
         nativeEvent: {
@@ -8,20 +10,26 @@ getLocationHandler = () => {
           }
         }
       };
-      return coordsEvent;
+      setLocation(coordsEvent.nativeEvent.coordinate);
     },
     err => {
-      console.log(err);
+      console.log("error getting location", err);
       return { error: "Fetching the Position failed, please pick one manually!"};
     })
   };
 
-  locationChange = (previousLocation) => {
-    let currentLocation = this.getLocationHandler();
+  export default setLocationHandler;
+
+  export let locationChange = (previousLocation, currentLocation) => {
+    // when location data is recieved typically it is to 7 decimal places
+    // https://gis.stackexchange.com/questions/8650/measuring-accuracy-of-latitude-and-longitude
+    // fourth decimal place is worth up to 11 m
+    // if the location matches up to this decimal then we'll consider this as the same location
+
     let isNewLocation = true;
 
 
     return isNewLocation;
   }
 
-  export default getLocationHandler;
+ 
