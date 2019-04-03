@@ -1,4 +1,4 @@
-import { setLocation } from "../../store/actions/location";
+import { setLocation } from "../../store/actions";
 
 setLocationHandler = () => {
     navigator.geolocation.getCurrentPosition(pos => {

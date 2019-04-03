@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Container, Header, Content, Button, Text, connectStyle } from 'native-base';
 import { StyleSheet, FlatList, AsyncStorage } from 'react-native';
 import { connect } from "react-redux";
-import { tryAuth, authAutoSignIn, addScan } from "../../store/actions/index";
+import { tryAuth, authAutoSignIn, addScan } from "../../store/actions";
 // import BLEdevices from "../../components/BlueTooth/Bluetooth";
 import BLEservice from "../../services/BlueTooth/Bluetooth";
 import setLocationHandler from "../../services/Location/Coordinates";
@@ -39,7 +39,7 @@ class AuthScreen extends Component {
   }
 
   start = () => {
-    let macAddy = "";
+    let macAddy = "2323";
     DeviceInfo.getMACAddress().then(mac => {
       macAddy = mac;
     });
