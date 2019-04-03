@@ -1,6 +1,5 @@
 import { SET_DEVICES, REMOVE_DEVICE, ADD_SCAN, BLOCK_DEVICE } from './actionTypes';
 import { uiStartLoading, uiStopLoading, authGetToken } from './index';
-import { dispatch } from 'rxjs/internal/observable/range';
 import fb from "../../services/firebase"
 
 let getTime = () => {
