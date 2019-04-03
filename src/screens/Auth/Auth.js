@@ -33,7 +33,6 @@ class AuthScreen extends Component {
 
   bledata = () => {
     let scan = this.ble.getCurrentBLEDevices();
-    console.log("bledata()")
     console.log("data scan: ", scan);
     this.authState.currentScan = scan;
   }

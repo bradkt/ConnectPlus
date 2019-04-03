@@ -125,13 +125,13 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    // places: state.places.places
+    // location: state.location
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    // onLoadPlaces: () => dispatch(getPlaces())
+    // getLocation: () => dispatch(getLocation())
   };
 };
 

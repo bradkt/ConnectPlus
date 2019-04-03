@@ -3,7 +3,6 @@ import { Container, Header, Content, Button, Text, ListItem } from 'native-base'
 import { StyleSheet, FlatList } from 'react-native';
 import { connect } from "react-redux";
 import PickLocation from "../../components/Location/LocationWithMap";
-import { getPlaces } from "../../store/actions/index";
 
 class PlacesSreen extends Component {
   constructor(props) {
@@ -73,13 +72,13 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    places: state.places.places
+    places: state.location.location
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onLoadPlaces: () => dispatch(getPlaces())
+    
   };
 };
 

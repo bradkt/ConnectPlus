@@ -1,12 +1,12 @@
 import { createStore, combineReducers, compose, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
-import placesReducer from './reducers/places';
+import locationReducer from './reducers/location';
 import devicesReducer from './reducers/devices';
 import uiReducer from "./reducers/ui";
 import authReducer from "./reducers/auth";
 
 const rootReducer = combineReducers({
-  places: placesReducer,
+  location: locationReducer,
   devices: devicesReducer,
   ui: uiReducer,
   auth: authReducer

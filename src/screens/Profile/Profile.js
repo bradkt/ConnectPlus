@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
   
   const mapDispatchToProps = dispatch => {
     return {
-    //   onLoadPlaces: () => dispatch(getPlaces())
+    //   localname: () => dispatch(callaction())
+
     };
   };
   

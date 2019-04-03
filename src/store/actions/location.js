@@ -1,8 +1,8 @@
-import { SET_PLACES, REMOVE_PLACE } from './actionTypes';
+import { SET_LOCATION } from './actionTypes';
 import { uiStartLoading, uiStopLoading, authGetToken } from './index';
 
-export const getPlaces = () => {
-    console.log("getting places");
+export const setLocation = () => {
+    console.log("setting Location");
     // return dispatch => {
     //   dispatch(authGetToken())
     //     .then(token => {
