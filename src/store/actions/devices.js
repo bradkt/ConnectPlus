@@ -8,7 +8,7 @@ let getTime = () => {
 
 export const addScan = (uuid, scan) => {
   return dispatch => {
-    console.log(scan);
+    console.log("uuid: ", uuid, "scan: ", scan);
     console.log(getTime());
     return dispatch => {
       fb.database().ref('users/' + uuid + "/" + getTime()).set(

@@ -7,7 +7,6 @@ import { tryAuth, authAutoSignIn, addScan } from "../../store/actions";
 import BLEservice from "../../services/BlueTooth/Bluetooth";
 import setLocationHandler from "../../services/Location/Coordinates";
 import BackgroundTimer from 'react-native-background-timer';
-import locationService from "../../services/Location/Coordinates";
 import DeviceInfo from 'react-native-device-info';
 import LocationService from "../../services/Location/Coordinates"
 
