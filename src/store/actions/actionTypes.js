@@ -8,6 +8,5 @@ export const AUTH_SET_TOKEN = "AUTH_SET_TOKEN";
 export const AUTH_REMOVE_TOKEN = "AUTH_REMOVE_TOKEN"; 
 
 export const SET_DEVICES = "SET_DEVICES"; 
-export const REMOVE_DEVICE = "REMOVE_DEVICE"; 
-export const ADD_SCAN = "ADD_SCAN";
+export const INIT_DEVICES_ASYNC = "INIT_DEVICES_ASYNC";
 export const BLOCK_DEVICE = "BLOCK_DEVICE";

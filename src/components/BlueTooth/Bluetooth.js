@@ -23,7 +23,7 @@ class BLEdevices extends Component {
   componentWillMount() {
     const subscription = this.manager.onStateChange((state) => {
         if (state === 'PoweredOn') {
-          console.log("---------------ble PoweredOn------------------");
+          console.log("---------------ble compontent PoweredOn------------------");
         }
     }, true);
 

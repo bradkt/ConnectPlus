@@ -1,11 +1,10 @@
-import { SET_DEVICES, REMOVE_DEVICE, ADD_DEVICE, ADD_SCAN, BLOCK_DEVICE } from "../actions/actionTypes";
+import { SET_DEVICES, INIT_DEVICES_ASYNC, BLOCK_DEVICE } from "../actions/actionTypes";
 import { AsyncStorage } from 'react-native';
 
 const initialState = {
-  devices: []
+  currentLocationdevices: [],
+  blockedDevices: []
 };
-
-
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -16,13 +15,8 @@ const reducer = (state = initialState, action) => {
         ...state,
         devices: action.devices
       };
-    case REMOVE_DEVICE:
-    console.log("remove device from device reducer");
-      return {
-        ...state
-      };
-    case ADD_SCAN:
-    console.log("add scan to fb");
+    case INIT_DEVICES_ASYNC:
+    console.log("init async from device reducer");
       return {
         ...state
       };
