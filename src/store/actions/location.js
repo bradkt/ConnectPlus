@@ -1,6 +1,7 @@
 import { SET_LOCATION } from './actionTypes';
 import { uiStartLoading, uiStopLoading, authGetToken } from './index';
 
+
 export const setLocation = (coords) => {
   console.log("setting places: ", coords)
   return dispatch => {

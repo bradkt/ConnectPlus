@@ -1,28 +1,37 @@
 import { SET_DEVICES, REMOVE_DEVICE, ADD_SCAN, BLOCK_DEVICE } from './actionTypes';
 import { uiStartLoading, uiStopLoading, authGetToken } from './index';
 import fb from "../../services/firebase"
+// import location from "../reducers/location";
 
 let getTime = () => {
   return Date.now();
 }
 
-export const addScan = (uuid, scan) => {
-  console.log("uuid: ", uuid, "scan: ", scan);
-  console.log(getTime());
-  
-
-  return dispatch => {
-    fb.database().ref('users/' + uuid + "/" + getTime()).set(
-      scan
-    , function(error) {
-      if (error) {
-        console.log("error could not set data to fb: ", error)
-      } else {
-        console.log("data xfer success")
-      }
-    });
-  };
+export const updateDevices = (uuid, scan, location) => {
+  console.log("uuid: ", uuid, "scan: ", scan, "location: ", location);
+  scan.map(device => {
+    addDeviceToDB(uuid, device, location, getTime());
+  })
 };
+
+addDeviceToDB = (uuid, device, location, time) => {
+  let updatedDevice = {
+    rssi: device.rssi,
+    mtu: device.mtu,
+    location: location
+  };
+
+  fb.database().ref('users/' + uuid + "/" + device.id + "/" + time).update(
+    updatedDevice
+  , function(error) {
+    if (error) {
+      console.log("error could not set data to fb: ", error)
+    } else {
+      console.log("data xfer success")
+    }
+  });
+}
+
 
 export const getDevices = () => {
     // console.log("getting devices");
@@ -50,12 +59,3 @@ export const getDevices = () => {
     //     });
     // };
   };
-
-
-  export const setDevices = (arry) => {
-    return {
-      type: SET_DEVICES,
-      devices: arry,
-    };
-  };
-
