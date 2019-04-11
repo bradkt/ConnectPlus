@@ -37,7 +37,7 @@ class AuthScreen extends Component {
       _this.setState({ myMacAddy: mac })
     });
 
-    // this.setState({ currentScan: exampleLocationDevices})
+    this.setState({ currentScan: exampleLocationDevices})
   }
 
   async loadData() {
@@ -126,6 +126,7 @@ class AuthScreen extends Component {
 
         break;
       }
+    }
   }
 
 
@@ -145,21 +146,21 @@ class AuthScreen extends Component {
             </CardItem>
             <CardItem bordered>
               <Body>
-              <Grid>
-                <Col>
-                  { data.name? <Text>{data.name}</Text> : (
-                    <Item regular>
-                      <Input placeholder="No Name" onChangeText={(e) => this.assignNameHandler(e, data.id)}/>
-                    </Item>
+                <Grid>
+                  <Col>
+                    { data.name? <Text>{data.name}</Text> : (
+                      <Item regular>
+                        <Input placeholder="No Name" onChangeText={(e) => this.assignNameHandler(e, data.id)}/>
+                      </Item>
+                    ) }
+                  </Col>
+                  <Col>{ data.name? <Text>{data.name}</Text> : (
+                    <Button onPress={this.assignName}>
+                      <Text>Assign</Text>
+                    </Button>
                   ) }
-                </Col>
-                <Col>{ data.name? <Text>{data.name}</Text> : (
-                  <Button onPress={this.assignName}>
-                    <Text>Assign</Text>
-                  </Button>
-                ) }
-              </Col>
-            </Grid>
+                  </Col>
+                </Grid>
               </Body>
             </CardItem>
             <CardItem footer bordered>
@@ -167,7 +168,7 @@ class AuthScreen extends Component {
             </CardItem>
           </Card>
       )
-  }
+  };
 
   render() {
     return (
