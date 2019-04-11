@@ -27,17 +27,18 @@ class BLEdevices extends Component {
         }
     }, true);
 
-    this.startScan();
+    // this.startScan();
     
   }
 
   startBGProcess = () => {
-    this.intervalId = BackgroundTimer.setInterval(() => {
-      // this will be executed even when app is the the background
-      console.log('----- scanning at interval --------');
-      this.startScan();
+    this.startScan();
+    // this.intervalId = BackgroundTimer.setInterval(() => {
+    //   // this will be executed even when app is the the background
+    //   console.log('----- scanning at interval --------');
+    //   this.startScan();
       
-    }, (1000 * 3) * 5);
+    // }, (1000 * 3) * 5);
   }
 
   stopBGProcess = () => {
@@ -124,10 +125,10 @@ class BLEdevices extends Component {
           <Button onPress={this.stopBGProcess} style={styles.mainButton}>
             <Text>Stop Scan</Text>
           </Button>
-          {/* <FlatList
+          <FlatList
             data={this.state.devices}
             renderItem={({item}) => this.deviceDataEl(item)}
-          /> */}
+          />
       </Content>
     );
   }

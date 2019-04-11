@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, FlatList } from 'react-native';
+import { StyleSheet, FlatList, Text } from 'react-native';
 import { connect } from "react-redux";
 import AccelerometerSensor from "../../components/InternalDevice/Accelerometer";
 
@@ -16,7 +16,10 @@ class ProfileSreen extends Component {
 
     render() {
         return (
-         <AccelerometerSensor/>
+          <>
+          <Text>Accelerometer</Text>
+          <AccelerometerSensor/>
+          </>
         );
       }
 

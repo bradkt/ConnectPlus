@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Button, Text, connectStyle } from 'native-base';
-import { StyleSheet, FlatList, AsyncStorage } from 'react-native';
+import { Container, Header, Content, Button, Text, connectStyle, Card, CardItem, Body, Left, Right, Icon, Title, Input, Item} from 'native-base';
+import { Col, Row, Grid } from "react-native-easy-grid";
+import { StyleSheet, FlatList, ListItem, AsyncStorage } from 'react-native';
 import { connect } from "react-redux";
 import { tryAuth, authAutoSignIn, updateDevices } from "../../store/actions";
 import BLEservice from "../../services/BlueTooth/Bluetooth";
@@ -25,7 +26,8 @@ class AuthScreen extends Component {
     ignoredDevices: [],
     isNewLocation: false,
     myMacAddy:"",
-    prevLocation: {latitude: 40.113348, longitude: -82.9966365}
+    prevLocation: {latitude: 40.113348, longitude: -82.9966365},
+    mostRecentlyUpdated: { id: "", name: "" }
   };
 
   componentDidMount = () => {
@@ -34,6 +36,8 @@ class AuthScreen extends Component {
     DeviceInfo.getMACAddress().then(mac => {
       _this.setState({ myMacAddy: mac })
     });
+
+    // this.setState({ currentScan: exampleLocationDevices})
   }
 
   async loadData() {
@@ -46,8 +50,6 @@ class AuthScreen extends Component {
     let scan = await this.ble.getCurrentBLEDevices();
 
     this.setState({ currentScan: scan });
-
-    // filter devices and updatedb
   }
 
   async beginProcess() {
@@ -59,17 +61,40 @@ class AuthScreen extends Component {
       this.setState({ locationBaseScan: [] });
       console.log("new location reseting locationBaseScan");
     }
-
     // filter devices and updatedb
     let removeThese = [...this.state.locationBaseScan, ...this.state.ignoredDevices];
     let uniqueDevices = this.filterDevices(this.state.currentScan, removeThese);
 
-    updateDevices(this.state.myMacAddy, uniqueDevices, this.state.prevLocation);
+    // updateDevices(this.state.myMacAddy, uniqueDevices, this.state.prevLocation);
 
     if(!this.state.isNewLocation){
       this.setState({ locationBaseScan: [...this.state.locationBaseScan, ...uniqueDevices] });
       console.log("not new location adding current to locationBaseScan");
     }
+  }
+
+  assignNameHandler = (text, id) => {
+    
+    if (this.state.mostRecentlyUpdated.id === id || this.state.mostRecentlyUpdated.id === "") {
+      this.setState({ mostRecentlyUpdated: { id: id, name: text } })
+    } else {
+      this.setState({ mostRecentlyUpdated: { id: "" } })
+    }
+  }
+
+  assignName = () => {
+    for (var i = 0; i < this.state.currentScan.length; i++) { 
+      if (this.state.currentScan[i].id === this.state.mostRecentlyUpdated.id){
+        this.state.currentScan[i].name = this.state.mostRecentlyUpdated.name;
+        this.state.currentScan[i].isAssignedName = true;
+        break;
+      }
+    }
+    console.log(this.state.currentScan)
+  }
+
+  getDeviceByID = () => {
+
   }
 
   LocationHandler = (prev, curr) => {
@@ -89,15 +114,81 @@ class AuthScreen extends Component {
     return unique;
   }
 
+  // when init marked as blocked fadeout or do something to give feedback
+  blockDevice = (id) => {
+     for (var i = 0; i < this.state.currentScan.length; i++) { 
+      if (this.state.currentScan[i].id === id){
+        this.state.currentScan[i].isBlocked = true;
+
+        this.setState(prevState => ({
+          ignoredDevices: [...prevState.ignoredDevices, ...this.state.currentScan[i]]
+        }))
+
+        break;
+      }
+  }
+
+
+
+  deviceDataEl = (data) => {
+    return (
+          <Card key={data.id}>
+            <CardItem header bordered>
+            <Grid>
+              <Col><Text>{data.id}</Text></Col>
+              <Col>
+                <Button onPress={() => this.blockDevice(data.id)}>
+                  <Text>Ignore</Text>
+                </Button>
+              </Col>
+            </Grid>
+            </CardItem>
+            <CardItem bordered>
+              <Body>
+              <Grid>
+                <Col>
+                  { data.name? <Text>{data.name}</Text> : (
+                    <Item regular>
+                      <Input placeholder="No Name" onChangeText={(e) => this.assignNameHandler(e, data.id)}/>
+                    </Item>
+                  ) }
+                </Col>
+                <Col>{ data.name? <Text>{data.name}</Text> : (
+                  <Button onPress={this.assignName}>
+                    <Text>Assign</Text>
+                  </Button>
+                ) }
+              </Col>
+            </Grid>
+              </Body>
+            </CardItem>
+            <CardItem footer bordered>
+              <Text>Distance: {data.rssi < -77 ? "Near" : "Far"}</Text>
+            </CardItem>
+          </Card>
+      )
+  }
+
   render() {
     return (
-      <>
-        <Text>Welcome</Text>
-        <Button onPress={this.beginProcess}>
-            <Text>Run Process</Text>
-        </Button>
-        {/* <BLEdevices /> */}
-      </>
+      <Container>
+        <Header>
+          <Left>
+            <Button transparent onPress={this.beginProcess}>
+              <Icon name='arrow-back' />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Connect Plus</Title>
+          </Body>
+        </Header>
+        <Content padder>
+          {this.state.currentScan.map(el => {
+            console.log(el.id);
+            return this.deviceDataEl(el);
+          })}
+        </Content>
+      </Container>
     );
   }
 }

@@ -83,11 +83,16 @@ class BLEservice {
         // console.log("Device mtu: ", device.mtu);
         if ( !doesExsistInArray(this.bleState.devices, device.id )) {
           // console.log(device.id + ": did not exsist in array");
+
+          // will want to move  the adding of extra props out of this file
+
           let targetDeviceData = {
             name: device.name,
             id: device.id,
             rssi: device.rssi,
             mtu: device.mtu,
+            isAssignedName: false,
+            isBlocked: false
           }
           this.bleState.devices.push(targetDeviceData)
         }
@@ -96,16 +101,5 @@ class BLEservice {
         }
   }
 }
-
-// export let doesExsistInArray = ( arry, target ) => {
-//   let inArray = false;
-//   for (i = 0; i < arry.length; i++) {
-//     if(arry[i].id === target){
-//       inArray = true;
-//       break;
-//     }
-//   } 
-//   return inArray;
-// }
 
 export default BLEservice;
