@@ -1,5 +1,5 @@
 import { BleManager } from 'react-native-ble-plx';
-import BackgroundTimer from 'react-native-background-timer';
+// import BackgroundTimer from 'react-native-background-timer';
 import { doesExsistInArray } from "../../utility";
 
 class BLEservice {

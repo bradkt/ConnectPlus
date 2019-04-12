@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Container, Header, Content, Button, Text, ListItem } from 'native-base';
 import { StyleSheet, FlatList } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
-import BackgroundTimer from 'react-native-background-timer';
+// import BackgroundTimer from 'react-native-background-timer';
 import { setDevices } from "../../store/actions/devices";
 const UUID = require("uuid-v4");
 const uuid = UUID();
@@ -42,7 +42,7 @@ class BLEdevices extends Component {
   }
 
   stopBGProcess = () => {
-    BackgroundTimer.clearInterval(this.intervalId);
+    // BackgroundTimer.clearInterval(this.intervalId);
   }
 
   startScan = () => {

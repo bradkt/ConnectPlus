@@ -14,7 +14,7 @@
     "native-base": "^2.12.1",
     "react": "16.6.3",
     "react-native": "0.58.6",
-    "react-native-background-timer": "^2.1.1",
+    "react-native-background-job": "^2.2.0",
     "react-native-ble-plx": "^1.0.3",
     "react-native-device-info": "^1.0.0",
     "react-native-easy-grid": "^0.2.1",

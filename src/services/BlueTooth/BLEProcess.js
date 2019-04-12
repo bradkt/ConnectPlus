@@ -1,5 +1,5 @@
 import { updateDevices } from "../../store/actions";
-import BackgroundTimer from 'react-native-background-timer';
+// import BackgroundTimer from 'react-native-background-timer';
 import location, {isNewLocation} from "../../services/Location/Coordinates";
 import { AsyncStorage } from 'react-native';
 import BLEservice from "./Bluetooth";
@@ -91,14 +91,14 @@ class BLEProcess {
   
     // this is the best function name ever
     repeter = () => {
-        this.intervalId = BackgroundTimer.setInterval(() => {
+        // this.intervalId = BackgroundTimer.setInterval(() => {
 
-            // this will be executed even when app is the the background
-            console.log('----- repeating ble process --------');
+        //     // this will be executed even when app is the the background
+        //     console.log('----- repeating ble process --------');
            
             
         
-        }, (1000 * 3) * 2);
+        // }, (1000 * 3) * 2);
     }
 
     LocationHandler = (prev, curr) => {
@@ -120,7 +120,7 @@ class BLEProcess {
 
     stopBGProcess = () => {
         console.log("stopping process");
-        BackgroundTimer.clearInterval(this.intervalId);
+        // BackgroundTimer.clearInterval(this.intervalId);
     }
 
 }
