@@ -1,8 +1,6 @@
 import { BleManager } from 'react-native-ble-plx';
 import BackgroundTimer from 'react-native-background-timer';
-import { doesExsistInArray } from "../../utility"
-const UUID = require("uuid-v4");
-const uuid = UUID();
+import { doesExsistInArray } from "../../utility";
 
 class BLEservice {
   constructor() {
@@ -39,19 +37,7 @@ class BLEservice {
     this.bleState.hadError = false;
   }
 
-  // startBGProcess = () => {
-  //   this.intervalId = BackgroundTimer.setInterval(() => {
-  //     // this will be executed even when app is the the background
-  //     console.log('----- scanning at interval --------');
-  //     this.startScan();
-      
-  //   }, (1000 * 3) * 2);
-  // }
 
-  // stopBGProcess = () => {
-  //   console.log("stopping process")
-  //   BackgroundTimer.clearInterval(this.intervalId);
-  // }
 
   startScan = () => {
     this.bleState.isScanning = true;

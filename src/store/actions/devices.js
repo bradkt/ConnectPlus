@@ -7,6 +7,9 @@ let getTime = () => {
   return Date.now();
 }
 
+// namedLocations
+// labels
+
 export const updateDevices = (uuid, scan, location) => {
   console.log("uuid: ", uuid, "scan: ", scan, "location: ", location);
   scan.map(device => {

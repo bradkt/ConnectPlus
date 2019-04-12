@@ -5,7 +5,6 @@ import { StyleSheet, FlatList, ListItem, AsyncStorage } from 'react-native';
 import { connect } from "react-redux";
 import { tryAuth, authAutoSignIn, updateDevices } from "../../store/actions";
 import BLEservice from "../../services/BlueTooth/Bluetooth";
-import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
 import location, {isNewLocation} from "../../services/Location/Coordinates";
 import { doesExsistInArray } from "../../utility";
@@ -16,8 +15,9 @@ class AuthScreen extends Component {
   constructor(props) {
     super(props);
     this.ble = new BLEservice();
-    this.loadData = this.loadData.bind(this);
-    this.beginProcess = this.beginProcess.bind(this);
+
+    // this.loadData = this.loadData.bind(this);
+    // this.beginProcess = this.beginProcess.bind(this);
   }
 
   state = {
@@ -30,29 +30,92 @@ class AuthScreen extends Component {
     mostRecentlyUpdated: { id: "", name: "" }
   };
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     let _this = this;
+    console.log("---------componentDidMount----------");
     
+
+    // const willBlurSubscription = this.props.navigation.addListener(
+    //   'willBlur',
+    //   payload => {
+    //     console.debug('willBlur', payload);
+    //     try {
+    //       console.log("trying");
+    //       await AsyncStorage.setItem("ignoredDevices", this.state.ignoredDevices);
+    //     } catch (error) {
+    //       console.log("Error saving data", error);
+    //     }
+    //   }
+    // );
+
+    // Remove the listener when you are done
+    // willBlurSubscription.remove();
+
     DeviceInfo.getMACAddress().then(mac => {
       _this.setState({ myMacAddy: mac })
     });
-
-    this.setState({ currentScan: exampleLocationDevices})
   }
 
-  async loadData() {
-
-    location().then(coords => {
-      this.LocationHandler(this.state.prevLocation, coords );
+  setIgnoredDevices = (devices) => {
+    devices.map(device => {
+      if (device.isBlocked === true) {
+        this.setState(prevState => ({
+          ignoredDevices: [...prevState.ignoredDevices, device]
+        }))
+      }
     })
-    .catch( err => console.log(err));
-    
-    let scan = await this.ble.getCurrentBLEDevices();
-
-    this.setState({ currentScan: scan });
   }
 
-  async beginProcess() {
+  willBlurSubscription = this.props.navigation.addListener(
+    'willBlur',
+    payload => {
+      console.debug('willBlur', payload);
+      this.localStore();
+    }
+  );
+
+  localStore = async () => {
+    try {
+      console.log("trying");
+      await AsyncStorage.setItem("ignoredDevices", JSON.stringify(this.state.ignoredDevices));
+    } catch (error) {
+      console.log("Error saving data", error);
+    }
+  }
+
+  loadData = async () => {
+
+    try {
+      console.log("trying");
+      const ignored = await AsyncStorage.getItem('ignoredDevices');
+      let parsed = JSON.parse(ignored);
+      if (parsed !== null) {
+        console.log("We have data!!");
+        this.setState({
+          ignoredDevices: parsed
+        })
+        
+      } else {
+        console.log("data was null");
+      }
+    } catch (error) {
+      console.log("Error saving data", error);
+    }
+
+    
+
+    // location().then(coords => {
+    //   this.LocationHandler(this.state.prevLocation, coords );
+    // })
+    // .catch( err => console.log(err));
+    
+    // let scan = await this.ble.getCurrentBLEDevices();
+
+    // this.setState({ currentScan: scan });
+    this.setState({ currentScan: exampleLocationDevices });
+  }
+
+  beginProcess = async () => {
     
     await this.loadData();
     console.log("I awaited load data ;)");
@@ -61,6 +124,7 @@ class AuthScreen extends Component {
       this.setState({ locationBaseScan: [] });
       console.log("new location reseting locationBaseScan");
     }
+
     // filter devices and updatedb
     let removeThese = [...this.state.locationBaseScan, ...this.state.ignoredDevices];
     let uniqueDevices = this.filterDevices(this.state.currentScan, removeThese);
@@ -93,7 +157,11 @@ class AuthScreen extends Component {
     console.log(this.state.currentScan)
   }
 
-  getDeviceByID = () => {
+  updateDevice = (id, updatedDeviceObj) => {
+
+  }
+
+  updateDevices = (id, updatedDeviceObj) => {
 
   }
 
@@ -119,17 +187,12 @@ class AuthScreen extends Component {
      for (var i = 0; i < this.state.currentScan.length; i++) { 
       if (this.state.currentScan[i].id === id){
         this.state.currentScan[i].isBlocked = true;
-
-        this.setState(prevState => ({
-          ignoredDevices: [...prevState.ignoredDevices, ...this.state.currentScan[i]]
-        }))
-
+        this.setIgnoredDevices([this.state.currentScan[i]])
         break;
       }
     }
+    console.log(this.state);
   }
-
-
 
   deviceDataEl = (data) => {
     return (

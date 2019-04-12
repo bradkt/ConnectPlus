@@ -14,8 +14,14 @@ import configureStore from './src/store/configureStore';
 const store = configureStore();
 import TabNavigator from "./src/components/Navigation/navigation"
 import Layout from "./src/screens/Layout/Layout"
+import BLEProcess from "./src/services/BlueTooth/BLEProcess"
 
 export default class App extends React.Component {
+
+  componentDidMount = () => {
+    let thing = new BLEProcess();
+  }
+
   render() {
     return (
       <Provider store={store}>
