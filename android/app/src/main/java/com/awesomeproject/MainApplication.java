@@ -16,7 +16,7 @@ import com.facebook.soloader.SoLoader;
 import com.polidea.reactnativeble.BlePackage;
 import com.sensors.RNSensorsPackage;
 import com.reactlibrary.RNWifiPackage;
-// import com.ocetnik.timer.BackgroundTimerPackage;
+import com.pilloxa.backgroundjob.BackgroundJobPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,8 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(new RNDeviceInfo(), new MainReactPackage(), new MapsPackage(),
-          new RNWifiPackage(), new RNGestureHandlerPackage(), new BlePackage(), new RNSensorsPackage());
+          new BackgroundJobPackage(), new RNWifiPackage(), new RNGestureHandlerPackage(), new BlePackage(),
+          new RNSensorsPackage());
       // new ImagePickerPackage(),
       // new VectorIconsPackage(),
     }
