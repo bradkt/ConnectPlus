@@ -20,6 +20,7 @@ export default class App extends React.Component {
 
   componentDidMount = () => {
     let thing = new BLEProcess();
+    thing.startUp();
   }
 
   render() {

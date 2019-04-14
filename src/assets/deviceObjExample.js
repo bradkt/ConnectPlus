@@ -4,7 +4,8 @@ export let exampleLocationDevices = [ { name: null, id: '80:0C:78:5C:3C:D5', rss
                                         { name: "Device One", id: '1B:8C:36:6E:76:6F', rssi: -90, mtu: 23, isAssignedName: false, isBlocked: false },
                                         { name: null, id: '27:B9:40:C1:B9:EA', rssi: -90, mtu: 23, isAssignedName: false, isBlocked: false },
                                         { name: null, id: '37:AF:22:48:C9:1E', rssi: -92, mtu: 23, isAssignedName: false, isBlocked: false },
-                                        { name: null, id: '80:4C:EF:49:F0:FF', rssi: -89, mtu: 23, isAssignedName: false, isBlocked: false },
+                                        { name: null, id:
+                                             '00:4C:EF:49:F0:FF', rssi: -89, mtu: 23, isAssignedName: false, isBlocked: false },
                                         { name: null, id: '17:5B:FD:7F:8A:C1', rssi: -76, mtu: 23, isAssignedName: false, isBlocked: false },
                                         { name: null, id: '80:1A:E3:90:7C:FB', rssi: -91, mtu: 23, isAssignedName: false, isBlocked: true } ];
 
