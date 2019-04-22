@@ -3,7 +3,9 @@ import { AsyncStorage } from 'react-native';
 
 const initialState = {
   currentLocationdevices: [],
-  blockedDevices: []
+  blockedDevices: [],
+  dbDevices: [],
+  currentDevice: {}
 };
 
 const reducer = (state = initialState, action) => {
@@ -11,9 +13,10 @@ const reducer = (state = initialState, action) => {
     case SET_DEVICES:
     console.log("set devices from device reducer");
     //AsyncStorage.setItem("devices", action.devices);
+    let currDevcies = Object.entries(action.data);
       return {
         ...state,
-        devices: action.devices
+        dbDevices: action.data
       };
     case INIT_DEVICES_ASYNC:
     console.log("init async from device reducer");

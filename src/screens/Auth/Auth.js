@@ -129,7 +129,7 @@ class AuthScreen extends Component {
     let removeThese = [...this.state.locationBaseScan, ...this.state.ignoredDevices];
     let uniqueDevices = this.filterDevices(this.state.currentScan, removeThese);
 
-    // updateDevices(this.state.myMacAddy, uniqueDevices, this.state.prevLocation);
+    updateDevices(this.state.myMacAddy, uniqueDevices, this.state.prevLocation);
 
     if(!this.state.isNewLocation){
       this.setState({ locationBaseScan: [...this.state.locationBaseScan, ...uniqueDevices] });

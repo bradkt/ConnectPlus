@@ -1,6 +1,7 @@
 import { SET_DEVICES, REMOVE_DEVICE, ADD_SCAN, BLOCK_DEVICE } from './actionTypes';
 import { uiStartLoading, uiStopLoading, authGetToken } from './index';
 import fb from "../../services/firebase"
+import { result } from "../../assets/FBDLallDevices";
 // import location from "../reducers/location";
 
 let getTime = () => {
@@ -21,7 +22,10 @@ addDeviceToDB = (uuid, device, location, time) => {
   let updatedDevice = {
     rssi: device.rssi,
     mtu: device.mtu,
-    location: location
+    location: location,
+    isAssignedName: device.isAssignedName,
+    isBlocked: device.isBlocked,
+    name: device.name
   };
 
   fb.database().ref('users/' + uuid + "/" + device.id + "/" + time).update(
@@ -36,29 +40,54 @@ addDeviceToDB = (uuid, device, location, time) => {
 }
 
 
-export const getDevices = () => {
-    // console.log("getting devices");
-    // return dispatch => {
-    //   dispatch(authGetToken())
-    //     .then(token => {
-    //       return fetch(
-    //         "https://fb-rnplay.firebaseio.com/places.json?auth=" +
-    //           token
-    //       );
-    //     })
-    //     .catch(() => {
-    //       alert("No valid token found!");
-    //     })
-    //     .then(res => {
-    //       if (res.ok) {
-    //         return res.json();
-    //       } else {
-    //         throw new Error();
-    //       }
-    //     })
-    //     .catch(err => {
-    //       alert("Something went wrong, could not get place :/");
-    //       console.log(err);
-    //     });
-    // };
+  export const getDevices = (uuid) => {
+    console.log("getting devices");
+    return dispatch => {
+      dispatch(uiStartLoading());
+        
+      // fb.database().ref('users/' + uuid + "/").on('value', function(snapshot) {
+      //   dispatch(setDevice(snapshot.val()));
+
+      // });
+
+      dispatch(setDevice(result));
+       
+      dispatch(uiStopLoading());
+    };
+  };
+
+  export const setDevice = (data) => {
+    return {
+      type: SET_DEVICES,
+      data: data
+    };
+  };
+
+
+  export const getDevice = (uuid, mac) => {
+    console.log("getting devices");
+    return dispatch => {
+      dispatch(uiStartLoading());
+        
+      fb.database().ref('users/' + uuid + "/").on('value', function(snapshot) {
+        SET_DEVICES(snapshot.val());
+
+      });
+       
+      dispatch(uiStopLoading());
+    };
+  };
+
+  export const updateDevice = (uuid, mac) => {
+    console.log("getting devices");
+    return dispatch => {
+      dispatch(uiStartLoading());
+        
+      fb.database().ref('users/' + uuid + "/").on('value', function(snapshot) {
+        console.log(snapshot.val());
+
+      });
+       
+      dispatch(uiStopLoading());
+    };
   };

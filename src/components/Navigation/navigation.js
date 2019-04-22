@@ -6,13 +6,14 @@ import AuthScreen from "../../screens/Auth/Auth";
 import PlacesScreen from "../../screens/Places/Places";
 import DevicesScreen from "../../screens/Devices/Devices";
 import ProfileScreen from "../../screens/Profile/Profile";
+import HomeScreen from "../../screens/Auth/Home";
 
 
 const TabNavigator = createBottomTabNavigator({
     Home: AuthScreen,
     Devices: DevicesScreen,
     Places: PlacesScreen,
-    Profile: ProfileScreen
+    Profile: HomeScreen
   });
   
 export default createAppContainer(TabNavigator);
