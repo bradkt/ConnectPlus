@@ -1,85 +1,58 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Button, Text, ListItem } from 'native-base';
-import { StyleSheet, FlatList } from 'react-native';
-import { connect } from "react-redux";
-import PickLocation from "../../components/Location/LocationWithMap";
+import { Container, Header, Content, Text, ListItem, Card, CardItem, List, Title } from 'native-base';
+import moment from "moment";
+import Map from "../../components/Location/Map";
 
 class PlacesSreen extends Component {
-  constructor(props) {
-    super(props);
 
-    this.state = {
-      place: "",
-      placesLoaded: false,
-      location: []
+  toLocalTime = (ISOtime) => {
+    let formatted = moment(ISOtime).format("dddd, MMMM D YYYY, h:mm a");
+    return formatted;
+  }
+
+  createCard = (scan, id) => {
+    return (
+      <Card key={id}>
+        <CardItem bordered>
+          <List>
+            <Map location={scan.location}></Map>
+            <ListItem><Text>Location: {scan.location.latitude.toString() + " : " 
+            + scan.location.longitude.toString()}</Text></ListItem>
+
+            <ListItem><Text>Time: {this.toLocalTime(scan.ISOtime)}</Text></ListItem>
+            <ListItem><Text>Distance: {scan.rssi < -71 ? "Near" : "Far"}</Text></ListItem>
+          </List>
+        </CardItem>
+      </Card>
+    )
+    
+  }
+
+  createCards = (data) => {
+    let cards = [];
+    for ( let scan in data.scans ) {
+      cards.push(this.createCard(data.scans[scan], scan));
     }
+    return cards;
   }
-
- locationPickedHandler = data => {
-  console.log(data);
-  let location = {
-    location: {latitude: data.latitude, longitude: data.longitude},
-    valid: true,
-    key: Math.random().toString()
-  }
-  
-  this.setState(prevState => ({
-    location: [...prevState.location, location]
-  }))
-
-};
-
-
-locationDataEl = (data) => {
-  console.log(data);
-  return (
-    <>
-      <ListItem>
-        <Text>latitude: {data.location.latitude}</Text>
-      </ListItem>
-      <ListItem>
-        <Text>longitude: {data.location.longitude}</Text>
-      </ListItem>
-    </>
-  );
-}
 
   render() {
-    return (
-      <>
-        <Text>Places Screen</Text>
-        <PickLocation onLocationPick={this.locationPickedHandler} />
-        <Text>Locations: </Text>
-        <Content>
+    const { navigation } = this.props;
+    const scans = navigation.getParam('data', null);
+    const id = navigation.getParam('id', null);
 
-        <FlatList
-          data={this.state.location}
-          renderItem={({item}) => this.locationDataEl(item)}
-        />
-        </Content>
-      </>
-    );
-  }
+    return (
+    <Container>
+      <Header>
+          <Title>{id.toString()} Device Details</Title>
+      </Header>
+      <Content padder>
+      {this.createCards(scans)}
+      </Content>
+    </Container>
+    )
+  };
+
 }
 
-const styles = StyleSheet.create({
-  searchButtonText: {
-    color: "orange",
-    fontWeight: "bold",
-    fontSize: 26
-  }
-});
-
-const mapStateToProps = state => {
-  return {
-    places: state.location.location
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PlacesSreen);
+export default PlacesSreen;

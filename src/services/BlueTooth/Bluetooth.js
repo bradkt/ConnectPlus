@@ -1,4 +1,5 @@
 import { BleManager } from 'react-native-ble-plx';
+import DeviceInfo from 'react-native-device-info';
 // import BackgroundTimer from 'react-native-background-timer';
 import { doesExsistInArray } from "../../utility";
 
@@ -7,7 +8,7 @@ class BLEservice {
     this.manager = new BleManager();
     this.manager.onStateChange((state) => {
       if (state === 'PoweredOn') {
-        console.log("---------------ble PoweredOn------------------");
+        console.log("-----ble PoweredOn---");
       }
     }, true);
   }
@@ -69,21 +70,21 @@ class BLEservice {
         // console.log("Device mtu: ", device.mtu);
         if ( !doesExsistInArray(this.bleState.devices, device.id )) {
           // console.log(device.id + ": did not exsist in array");
-
+          console.log(device.id + "--- NOT IN current scan array");
           // will want to move  the adding of extra props out of this file
-
+          let date = new Date();
           let targetDeviceData = {
             name: device.name,
             id: device.id,
             rssi: device.rssi,
             mtu: device.mtu,
-            isAssignedName: false,
-            isBlocked: false
+            ISOtime: date.toISOString(),
+            timezone: DeviceInfo.getTimezone()
           }
-          this.bleState.devices.push(targetDeviceData)
+          this.bleState.devices.push(targetDeviceData);
         }
         else {
-          console.log(device.id + ": ----------- exsist in current scan array");
+          // console.log(device.id + "--- exsist in current scan array");
         }
   }
 }

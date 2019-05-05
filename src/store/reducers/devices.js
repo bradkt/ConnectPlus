@@ -11,9 +11,9 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_DEVICES:
-    console.log("set devices from device reducer");
+    // console.log("set devices from device reducer" , action.data);
     //AsyncStorage.setItem("devices", action.devices);
-    let currDevcies = Object.entries(action.data);
+    //let currDevcies = Object.entries(action.data);
       return {
         ...state,
         dbDevices: action.data

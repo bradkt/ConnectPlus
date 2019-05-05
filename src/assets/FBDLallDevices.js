@@ -1,129 +1,200 @@
-export let result = [ 'AC:5F:3E:B2:C9:66',
-   { '00:4C:EF:49:F0:FF':
-      { '1555351229404':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -89 },
-        '1555352297298':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -89 } },
-     '17:5B:FD:7F:8A:C1':
-      { '1555351229407':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -76 },
-        '1555352297302':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -76 } },
-     '1B:44:5C:5F:B3:06':
-      { '1555352297281':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -61 } },
-     '1B:8C:36:6E:76:6F':
-      { '1555351229393':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           name: 'Device Two',
-           rssi: -90 },
-        '1555352297290':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           name: 'Device One',
-           rssi: -90 } },
-     '27:B9:40:C1:B9:EA':
-      { '1555351229397':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -90 },
-        '1555352297292':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -90 } },
-     '37:AF:22:48:C9:1E':
-      { '1555351229401':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -92 },
-        '1555352297296':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -92 } },
-     '80:0C:78:5C:3C:D5':
-      { '1555352297242':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -75 } },
-     '80:1A:E3:90:7C:FB':
-      { '1555351229410':
-         { isAssignedName: false,
-           isBlocked: true,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -91 },
-        '1555352297305':
-         { isAssignedName: false,
-           isBlocked: true,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -91 } },
-     '80:30:A3:27:D2:34':
-      { '1555351229357':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -75 },
-        '1555352297286':
-         { isAssignedName: false,
-           isBlocked: false,
-           location: { latitude: 40.113348, longitude: -82.9966365 },
-           mtu: 23,
-           rssi: -75 } } } ]
-
-
-
-// transformData1 = (data) => {
-//   for ( let key in data ) {  
-//       console.log(key);
-//    }  
-// }
-
-// transformData2 = (data) => {
-//    Object.values(data).map((el, i) => {     
-//       console.log("----------------" + i + "-------------------");
-//       console.log(Object.keys(el));  
-//       console.log(Object.values(el));        
-//    });
-// }
-
-
-// console.log(transformData2(result[1]));
-
-
+export let result = {
+    "AC:5F:3E:B2:C9:66" : {
+      "02:F9:FB:98:16:65" : {
+        "scans" : {
+          "1556633145573" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -78,
+            "ISOtime" : "2019-04-30T14:05:42.587Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "04:A1:19:68:2C:75" : {
+        "scans" : {
+          "1556633145594" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -89,
+            "ISOtime" : "2019-04-30T14:05:42.632Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "06:9E:A2:F4:61:F6" : {
+        "scans" : {
+          "1556633145564" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -72,
+            "ISOtime" : "2019-04-30T14:05:42.574Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "0F:C4:BA:A9:6D:02" : {
+        "scans" : {
+          "1556633145576" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -67,
+            "ISOtime" : "2019-04-30T14:05:42.593Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "14:E5:4D:DD:2A:8D" : {
+        "scans" : {
+          "1556633145600" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -74,
+            "ISOtime" : "2019-04-30T14:05:42.693Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "1A:7E:78:98:3A:7E" : {
+        "scans" : {
+          "1556633145602" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -91,
+            "ISOtime" : "2019-04-30T14:05:42.828Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "24:2A:F4:B5:52:55" : {
+        "scans" : {
+          "1556633145589" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -80,
+            "ISOtime" : "2019-04-30T14:05:42.618Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "2B:45:32:E7:13:5A" : {
+        "scans" : {
+          "1556633145592" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -73,
+            "ISOtime" : "2019-04-30T14:05:42.626Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "33:B2:28:A1:59:D6" : {
+        "scans" : {
+          "1556633145580" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -67,
+            "ISOtime" : "2019-04-30T14:05:42.600Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "37:2B:99:60:8F:C6" : {
+        "scans" : {
+          "1556633145584" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -82,
+            "ISOtime" : "2019-04-30T14:05:42.607Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "3B:F0:A3:40:52:FF" : {
+        "scans" : {
+          "1556633145604" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -63,
+            "ISOtime" : "2019-04-30T14:05:42.844Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "3C:37:F3:A7:27:2B" : {
+        "scans" : {
+          "1556633145527" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -74,
+            "ISOtime" : "2019-04-30T14:05:42.564Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "4A:31:AB:6F:FA:6A" : {
+        "scans" : {
+          "1556633145568" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -102,
+            "ISOtime" : "2019-04-30T14:05:42.580Z",
+            "tz" : "America/New_York"
+          }
+        }
+      },
+      "67:53:B8:BB:0E:D4" : {
+        "scans" : {
+          "1556633145597" : {
+            "location" : {
+              "latitude" : 40.1133482,
+              "longitude" : -82.996633
+            },
+            "mtu" : 23,
+            "rssi" : -75,
+            "ISOtime" : "2019-04-30T14:05:42.679Z",
+            "tz" : "America/New_York"
+          }
+        }
+      }
+    }
+}

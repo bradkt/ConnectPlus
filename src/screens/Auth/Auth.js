@@ -15,9 +15,6 @@ class AuthScreen extends Component {
   constructor(props) {
     super(props);
     this.ble = new BLEservice();
-
-    // this.loadData = this.loadData.bind(this);
-    // this.beginProcess = this.beginProcess.bind(this);
   }
 
   state = {
@@ -25,15 +22,12 @@ class AuthScreen extends Component {
     currentScan: [],
     ignoredDevices: [],
     isNewLocation: false,
-    myMacAddy:"",
-    prevLocation: {latitude: 40.113348, longitude: -82.9966365},
+    uuid:"",
+    prevLocation: {latitude: 41.113348, longitude: -82.9966365},
     mostRecentlyUpdated: { id: "", name: "" }
   };
 
   componentDidMount = async () => {
-    let _this = this;
-    console.log("---------componentDidMount----------");
-    
 
     // const willBlurSubscription = this.props.navigation.addListener(
     //   'willBlur',
@@ -47,32 +41,13 @@ class AuthScreen extends Component {
     //     }
     //   }
     // );
-
     // Remove the listener when you are done
     // willBlurSubscription.remove();
 
     DeviceInfo.getMACAddress().then(mac => {
-      _this.setState({ myMacAddy: mac })
+      this.setState({ uuid: mac })
     });
   }
-
-  setIgnoredDevices = (devices) => {
-    devices.map(device => {
-      if (device.isBlocked === true) {
-        this.setState(prevState => ({
-          ignoredDevices: [...prevState.ignoredDevices, device]
-        }))
-      }
-    })
-  }
-
-  willBlurSubscription = this.props.navigation.addListener(
-    'willBlur',
-    payload => {
-      console.debug('willBlur', payload);
-      this.localStore();
-    }
-  );
 
   localStore = async () => {
     try {
@@ -83,14 +58,12 @@ class AuthScreen extends Component {
     }
   }
 
-  loadData = async () => {
-
+  loadLocalData = async () => {
     try {
-      console.log("trying");
       const ignored = await AsyncStorage.getItem('ignoredDevices');
       let parsed = JSON.parse(ignored);
       if (parsed !== null) {
-        console.log("We have data!!");
+        console.log("We have data: ", parsed);
         this.setState({
           ignoredDevices: parsed
         })
@@ -101,24 +74,20 @@ class AuthScreen extends Component {
     } catch (error) {
       console.log("Error saving data", error);
     }
-
+    location().then(coords => {
+      this.LocationHandler(this.state.prevLocation, coords );
+    })
+    .catch( err => console.log(err));
     
+    let scan = await this.ble.getCurrentBLEDevices();
 
-    // location().then(coords => {
-    //   this.LocationHandler(this.state.prevLocation, coords );
-    // })
-    // .catch( err => console.log(err));
-    
-    // let scan = await this.ble.getCurrentBLEDevices();
-
-    // this.setState({ currentScan: scan });
-    this.setState({ currentScan: exampleLocationDevices });
+    this.setState({ currentScan: scan });
+    // this.setState({ currentScan: exampleLocationDevices });
   }
 
   beginProcess = async () => {
     
-    await this.loadData();
-    console.log("I awaited load data ;)");
+    await this.loadLocalData();
     
     if(this.state.isNewLocation){
       this.setState({ locationBaseScan: [] });
@@ -129,40 +98,12 @@ class AuthScreen extends Component {
     let removeThese = [...this.state.locationBaseScan, ...this.state.ignoredDevices];
     let uniqueDevices = this.filterDevices(this.state.currentScan, removeThese);
 
-    updateDevices(this.state.myMacAddy, uniqueDevices, this.state.prevLocation);
+    updateDevices(this.state.uuid, uniqueDevices, this.state.prevLocation);
 
     if(!this.state.isNewLocation){
       this.setState({ locationBaseScan: [...this.state.locationBaseScan, ...uniqueDevices] });
       console.log("not new location adding current to locationBaseScan");
     }
-  }
-
-  assignNameHandler = (text, id) => {
-    
-    if (this.state.mostRecentlyUpdated.id === id || this.state.mostRecentlyUpdated.id === "") {
-      this.setState({ mostRecentlyUpdated: { id: id, name: text } })
-    } else {
-      this.setState({ mostRecentlyUpdated: { id: "" } })
-    }
-  }
-
-  assignName = () => {
-    for (var i = 0; i < this.state.currentScan.length; i++) { 
-      if (this.state.currentScan[i].id === this.state.mostRecentlyUpdated.id){
-        this.state.currentScan[i].name = this.state.mostRecentlyUpdated.name;
-        this.state.currentScan[i].isAssignedName = true;
-        break;
-      }
-    }
-    console.log(this.state.currentScan)
-  }
-
-  updateDevice = (id, updatedDeviceObj) => {
-
-  }
-
-  updateDevices = (id, updatedDeviceObj) => {
-
   }
 
   LocationHandler = (prev, curr) => {
@@ -182,46 +123,19 @@ class AuthScreen extends Component {
     return unique;
   }
 
-  // when init marked as blocked fadeout or do something to give feedback
-  blockDevice = (id) => {
-     for (var i = 0; i < this.state.currentScan.length; i++) { 
-      if (this.state.currentScan[i].id === id){
-        this.state.currentScan[i].isBlocked = true;
-        this.setIgnoredDevices([this.state.currentScan[i]])
-        break;
-      }
-    }
-    console.log(this.state);
-  }
-
   deviceDataEl = (data) => {
     return (
           <Card key={data.id}>
             <CardItem header bordered>
             <Grid>
               <Col><Text>{data.id}</Text></Col>
-              <Col>
-                <Button onPress={() => this.blockDevice(data.id)}>
-                  <Text>Ignore</Text>
-                </Button>
-              </Col>
             </Grid>
             </CardItem>
             <CardItem bordered>
               <Body>
                 <Grid>
                   <Col>
-                    { data.name? <Text>{data.name}</Text> : (
-                      <Item regular>
-                        <Input placeholder="No Name" onChangeText={(e) => this.assignNameHandler(e, data.id)}/>
-                      </Item>
-                    ) }
-                  </Col>
-                  <Col>{ data.name? <Text>{data.name}</Text> : (
-                    <Button onPress={this.assignName}>
-                      <Text>Assign</Text>
-                    </Button>
-                  ) }
+                    { data.name? <Text>{data.name}</Text> :  <Text>No Name</Text> }
                   </Col>
                 </Grid>
               </Body>
@@ -248,7 +162,6 @@ class AuthScreen extends Component {
         </Header>
         <Content padder>
           {this.state.currentScan.map(el => {
-            console.log(el.id);
             return this.deviceDataEl(el);
           })}
         </Content>
