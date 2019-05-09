@@ -47,11 +47,11 @@ class BLEProcess {
 
     localStore = async () => {
         try {
-            const ignored = await AsyncStorage.getItem('ignoredDevices');
-            let parsed = JSON.parse(ignored);
-            if (parsed !== null) {
-              console.log("We have data: ", parsed);
-              this.bleState.ignoredDevices = parsed
+            const storedIgnored = await AsyncStorage.getItem('ignoredDevices');
+            let Ignored = JSON.parse(storedIgnored);
+            if (Ignored !== null) {
+              console.log("We have data: ", Ignored);
+              this.bleState.ignoredDevices = Ignored
             } else {
               console.log("data was null");
             }
@@ -67,7 +67,7 @@ class BLEProcess {
         _this.bleState.myMacAddy = mac
       });
 
-      _this.localStore();
+      this.localStore();
 
       location().then(coords => {
         this.LocationHandler(this.bleState.prevLocation, coords );
@@ -82,7 +82,7 @@ class BLEProcess {
 
 
     beginProcess = async () => {
-  
+      console.log("bleprocess locationBaseScan", this.bleState.locationBaseScan);
       await this.loadData();
       
       if(this.bleState.isNewLocation){
@@ -92,8 +92,9 @@ class BLEProcess {
   
       // filter devices and updatedb
       let removeThese = [...this.bleState.locationBaseScan, ...this.bleState.ignoredDevices];
+      console.log("bleprocess remove these: ", removeThese);
       let uniqueDevices = this.filterDevices(this.bleState.currentScan, removeThese);
-  
+      console.log("bleprocess uniqueDevices: ", uniqueDevices);
       updateDevices(this.bleState.myMacAddy, uniqueDevices, this.bleState.prevLocation);
   
       if(!this.bleState.isNewLocation){

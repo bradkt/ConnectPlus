@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Text, ListItem, Card, CardItem, List, Title } from 'native-base';
+import { Container, Header, Content, Text, ListItem, Card, CardItem, List, Title, Label } from 'native-base';
+import { Slider, StyleSheet } from "react-native";
 import moment from "moment";
 import Map from "../../components/Location/Map";
 
@@ -10,6 +11,7 @@ class PlacesSreen extends Component {
     return formatted;
   }
 
+  // -26 = few inches & -100 40 to 50 meters
   createCard = (scan, id) => {
     return (
       <Card key={id}>
@@ -20,7 +22,19 @@ class PlacesSreen extends Component {
             + scan.location.longitude.toString()}</Text></ListItem>
 
             <ListItem><Text>Time: {this.toLocalTime(scan.ISOtime)}</Text></ListItem>
-            <ListItem><Text>Distance: {scan.rssi < -71 ? "Near" : "Far"}</Text></ListItem>
+            {/* <ListItem><Text>Distance: {scan.rssi < -71 ? "Near" : "Far"}</Text></ListItem> */}
+            <ListItem>
+              <Text>Far</Text>
+              <Slider
+                style={styles.slider}
+                step={1}
+                minimumValue={-100}
+                maximumValue={-26}
+                value={scan.rssi}
+                disabled
+              />
+              <Text>Near</Text>
+            </ListItem>
           </List>
         </CardItem>
       </Card>
@@ -47,12 +61,18 @@ class PlacesSreen extends Component {
           <Title>{id.toString()} Device Details</Title>
       </Header>
       <Content padder>
-      {this.createCards(scans)}
+        {this.createCards(scans)}
       </Content>
     </Container>
     )
   };
 
 }
+
+const styles = StyleSheet.create({
+  slider: {
+    width: 200,
+  },
+});
 
 export default PlacesSreen;

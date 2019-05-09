@@ -40,5 +40,4 @@ emulator-5554 offline # Google emulator
 ### Release build
 
 /c/Program Files/Java/jdk1.8.0_201/bin
-
 An accelerometer is a sensor which measures the tilting motion and orientation of a mobile phone.

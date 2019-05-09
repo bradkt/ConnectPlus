@@ -11,7 +11,7 @@ import HomeScreen from "../../screens/Auth/Home";
 
 const TabNavigator = createBottomTabNavigator({
     Home: AuthScreen,
-    Devices: DevicesScreen,
+    Play: ProfileScreen,
     Places: PlacesScreen,
     Profile: HomeScreen
   });

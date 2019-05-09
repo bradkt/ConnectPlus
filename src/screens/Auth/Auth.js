@@ -51,7 +51,6 @@ class AuthScreen extends Component {
 
   localStore = async () => {
     try {
-      console.log("trying");
       await AsyncStorage.setItem("ignoredDevices", JSON.stringify(this.state.ignoredDevices));
     } catch (error) {
       console.log("Error saving data", error);
@@ -141,7 +140,7 @@ class AuthScreen extends Component {
               </Body>
             </CardItem>
             <CardItem footer bordered>
-              <Text>Distance: {data.rssi < -77 ? "Near" : "Far"}</Text>
+              <Text>Distance: {data.rssi > -77 ? "Near" : "Far"}</Text>
             </CardItem>
           </Card>
       )

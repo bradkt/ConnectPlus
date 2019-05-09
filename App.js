@@ -19,8 +19,8 @@ import BLEProcess from "./src/services/BlueTooth/BLEProcess"
 export default class App extends React.Component {
 
   componentDidMount = () => {
-    let thing = new BLEProcess();
-    thing.startUp();
+    let process = new BLEProcess();
+    process.startUp();
   }
 
   render() {

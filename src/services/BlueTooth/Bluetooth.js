@@ -25,7 +25,7 @@ class BLEservice {
     let _this = this;
     this.startScan();
     setTimeout(() => {
-      this.stopScan();
+      _this.stopScan();
     }, 1500);
     return new Promise(function(resolve, reject) {
       setTimeout(() => {
@@ -70,7 +70,7 @@ class BLEservice {
         // console.log("Device mtu: ", device.mtu);
         if ( !doesExsistInArray(this.bleState.devices, device.id )) {
           // console.log(device.id + ": did not exsist in array");
-          console.log(device.id + "--- NOT IN current scan array");
+          console.log(device.id + "--- NOT IN current scan");
           // will want to move  the adding of extra props out of this file
           let date = new Date();
           let targetDeviceData = {
@@ -84,7 +84,7 @@ class BLEservice {
           this.bleState.devices.push(targetDeviceData);
         }
         else {
-          // console.log(device.id + "--- exsist in current scan array");
+          // console.log(device.id + "--- exsist in current scan");
         }
   }
 }

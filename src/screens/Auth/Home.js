@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Button, Text, connectStyle, Card, CardItem, Body, Left, Right, Icon, Title, Input, Item, List, ListItem} from 'native-base';
+import { Container, Header, Content, Button, Text, connectStyle, Card, CardItem, Body, Left, Right, Icon, Title, Input, Item, List, ListItem, Label} from 'native-base';
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { StyleSheet, AsyncStorage } from 'react-native';
 import { connect } from "react-redux";
@@ -22,16 +22,10 @@ class HomeScreen extends Component {
 
   componentDidMount = () => {
     DeviceInfo.getMACAddress().then(mac => {
+      this.props.getDevices(mac);
       this.setState({ uuid: mac })
     });
     this.local_LoadData();
-    this.getDevices();
-    
-  }
-
-  getDevices = () => {
-    this.props.getDevices(this.state.uuid);
-    // this return val = to state data obj
   }
 
   assignNameHandler = (text, id) => {
@@ -62,7 +56,6 @@ class HomeScreen extends Component {
   
   local_BlockDevice = () => {
     try {
-      console.log("trying");
       AsyncStorage.setItem("ignoredDevices", JSON.stringify(this.state.ignoredDevices));
     } catch (error) {
       console.log("Error saving data", error);
@@ -118,7 +111,8 @@ class HomeScreen extends Component {
                 <ListItem><Text>Time: {this.toLocalTime(el.ISOtime)}</Text></ListItem>
                 <ListItem><Text>Location: {el.location.latitude.toString() + " : " 
                 + el.location.longitude.toString()}</Text></ListItem>
-                <ListItem><Text>Distance: {el.rssi < -71 ? "Near" : "Far"}</Text></ListItem>
+                {/* <ListItem><Text>Distance: {el.rssi > -71 ? "Near" : "Far"}</Text></ListItem> */}
+                
               </List>
             </CardItem>
           );
@@ -168,10 +162,7 @@ class HomeScreen extends Component {
             <CardItem footer bordered>
                 <Button onPress={() => {
                   showDetails = !showDetails;
-                  this.props.navigation.navigate('Places', { data: data, id: el })
-                  // can I send the device data via navigator? if not use redux
-                  
-                  console.log(showDetails);
+                  this.props.navigation.navigate('Places', { data: data, id: el });
                 }}>
                   <Text>View Details</Text>    
                 </Button>
@@ -183,8 +174,7 @@ class HomeScreen extends Component {
   createCards = (devices) => {
     let cards = [];
     for ( let el in devices ) {
-      
-      if (Object.keys(devices[el].scans).length > 3 ) {
+      if (Object.keys(devices[el].scans).length > 1 ) {
         cards.push(this.createCard(devices[el], el));
       }
     }
@@ -192,18 +182,18 @@ class HomeScreen extends Component {
   }
 
   render() {
-    let devices = this.props.devices[this.state.uuid];
+    //let devices = this.props.devices[this.state.uuid];
     return (
+      !this.props.isLoading ? (
       <Container>
         <Header>
-          
             <Title>Discovered Non Unique Devices</Title>
-          
         </Header>
         <Content padder>
-          { !this.props.isLoading ? this.createCards(devices).map(el => el) : null }
+          {this.createCards(this.props.devices).map(el => el)}
         </Content>
       </Container>
+      ) : <Text>Loading...</Text>
     );
   }
 }
