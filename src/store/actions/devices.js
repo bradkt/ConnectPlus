@@ -27,14 +27,14 @@ export const updateDevices = (uuid, scan, location) => {
 // update object to users/uuid/(profile/devices/settings(ignoredDevices))
 
 addDeviceToDB = (uuid, device, location, time) => {
-  
+  let date = new Date(); 
   let scan = {
     rssi: device.rssi,
     mtu: device.mtu,
     location: location,
     name: device.name,
-    ISOtime: device.ISOtime,
-    tz: device.timezone
+    ISOtime: date.toISOString(),
+    tz: DeviceInfo.getTimezone()
   };
   
   fb.database().ref('users/' + uuid + "/devices/" + device.id + "/scans/" + time ).update(

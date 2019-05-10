@@ -18,11 +18,17 @@ class BLEProcess {
         ignoredDevices: [],
         isNewLocation: false,
         myMacAddy:"",
-        prevLocation: {latitude: 40.113348, longitude: -82.9966365}
+        prevLocation: {}
     };
 
     startUp = async () => {
         let _this = this;
+
+        location().then(coords => {
+          this.bleState.prevLocation = coords;
+        })
+        .catch( err => console.log(err));
+
 
         bleJob = {
           jobKey: "BLE",

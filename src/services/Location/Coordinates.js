@@ -55,9 +55,6 @@ export let isNewLocation = (previousLocation, currentLocation) => {
   if (Object.entries(previousLocation).length === 0) {
     return;
   } 
-
-  console.log("previousLocation: ", previousLocation, "currentLocation: ", currentLocation);
-
   // let pl_lat = previousLocation.latitude.toFixed(4);
   // let pl_long = previousLocation.longitude.toFixed(4);
 

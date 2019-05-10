@@ -1,6 +1,4 @@
 import { BleManager } from 'react-native-ble-plx';
-import DeviceInfo from 'react-native-device-info';
-// import BackgroundTimer from 'react-native-background-timer';
 import { doesExsistInArray } from "../../utility";
 
 class BLEservice {
@@ -18,10 +16,17 @@ class BLEservice {
     devices: [],
     isScanning: false,
     hadError: false
+
   };
+  
 
+  handleTimeout = () => {
+    
+  }
 
+// https://stackoverflow.com/questions/47513549/timers-in-react-native-this-settimeout
   getCurrentBLEDevices = () => {
+
     let _this = this;
     this.startScan();
     setTimeout(() => {
@@ -42,7 +47,7 @@ class BLEservice {
 
   startScan = () => {
     this.bleState.isScanning = true;
-
+    console.log("scanning start");
     this.manager.startDeviceScan(null, null, (error, device) => {
 
         if (error) {
@@ -54,7 +59,6 @@ class BLEservice {
         }
         this.collectDeviceData(device);
     });
-    
   }
 
   stopScan = () => {
@@ -64,22 +68,15 @@ class BLEservice {
   }
 
   collectDeviceData = device => {
-        // console.log("Device Name: ", device.name);
-        // console.log("Device id: ", device.id);
-        // console.log("Device rssi: ", device.rssi);
-        // console.log("Device mtu: ", device.mtu);
         if ( !doesExsistInArray(this.bleState.devices, device.id )) {
-          // console.log(device.id + ": did not exsist in array");
           console.log(device.id + "--- NOT IN current scan");
           // will want to move  the adding of extra props out of this file
-          let date = new Date();
+          
           let targetDeviceData = {
             name: device.name,
             id: device.id,
             rssi: device.rssi,
             mtu: device.mtu,
-            ISOtime: date.toISOString(),
-            timezone: DeviceInfo.getTimezone()
           }
           this.bleState.devices.push(targetDeviceData);
         }

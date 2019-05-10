@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Container, Header, Content, Button, Text, connectStyle, Card, CardItem, Body, Left, Right, Icon, Title, Input, Item} from 'native-base';
 import { Col, Row, Grid } from "react-native-easy-grid";
-import { StyleSheet, FlatList, ListItem, AsyncStorage } from 'react-native';
+import { StyleSheet, FlatList, Slider, AsyncStorage } from 'react-native';
 import { connect } from "react-redux";
 import { tryAuth, authAutoSignIn, updateDevices } from "../../store/actions";
 import BLEservice from "../../services/BlueTooth/Bluetooth";
@@ -23,7 +23,7 @@ class AuthScreen extends Component {
     ignoredDevices: [],
     isNewLocation: false,
     uuid:"",
-    prevLocation: {latitude: 41.113348, longitude: -82.9966365},
+    prevLocation: {},
     mostRecentlyUpdated: { id: "", name: "" }
   };
 
@@ -43,6 +43,9 @@ class AuthScreen extends Component {
     // );
     // Remove the listener when you are done
     // willBlurSubscription.remove();
+    location().then(coords => {
+      this.setState({prevLocation: coords})
+    })
 
     DeviceInfo.getMACAddress().then(mac => {
       this.setState({ uuid: mac })
@@ -140,7 +143,16 @@ class AuthScreen extends Component {
               </Body>
             </CardItem>
             <CardItem footer bordered>
-              <Text>Distance: {data.rssi > -77 ? "Near" : "Far"}</Text>
+              <Text>Far</Text>
+              <Slider
+                  style={styles.slider}
+                  step={1}
+                  minimumValue={-100}
+                  maximumValue={-26}
+                  value={data.rssi}
+                  disabled
+                />
+                <Text>Near</Text>
             </CardItem>
           </Card>
       )
@@ -172,6 +184,9 @@ class AuthScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
+  },
+  slider: {
+    width: 200,
   },
 });
 
