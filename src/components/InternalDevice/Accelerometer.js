@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    // location: state.location
+    // location: state
   };
 };
 

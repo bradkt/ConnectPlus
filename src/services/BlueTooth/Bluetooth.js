@@ -18,15 +18,9 @@ class BLEservice {
     hadError: false
 
   };
-  
-
-  handleTimeout = () => {
-    
-  }
 
 // https://stackoverflow.com/questions/47513549/timers-in-react-native-this-settimeout
   getCurrentBLEDevices = () => {
-
     let _this = this;
     this.startScan();
     setTimeout(() => {

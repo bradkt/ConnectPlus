@@ -3,9 +3,8 @@ import { Container, Header, Content, Button, Text, connectStyle, Card, CardItem,
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { StyleSheet, AsyncStorage } from 'react-native';
 import { connect } from "react-redux";
-import { tryAuth, authAutoSignIn, getDevices, setDeviceName, blockDevice } from "../../store/actions";
+import { tryAuth, authAutoSignIn, getDevices, setDeviceName, ignoreDevice } from "../../store/actions";
 import DeviceInfo from 'react-native-device-info';
-import {result} from "../../assets/FBDLallDevices";
 import moment from "moment";
 import _ from "lodash/array";
 
@@ -17,7 +16,6 @@ class HomeScreen extends Component {
   state = {
     mostRecentlyUpdated: {},
     uuid:"",
-    ignoredDevices: [],
   };
 
   componentDidMount = () => {
@@ -25,7 +23,7 @@ class HomeScreen extends Component {
       this.props.getDevices(mac);
       this.setState({ uuid: mac })
     });
-    this.local_LoadData();
+
   }
 
   assignNameHandler = (text, id) => {
@@ -36,16 +34,13 @@ class HomeScreen extends Component {
     this.props.setDeviceName(this.state.uuid, this.state.mostRecentlyUpdated.id, this.state.mostRecentlyUpdated.value)
   }
 
-  updateDevice = (id, updatedDeviceObj) => {
-    
-  }
-
   // when init marked as blocked fadeout or do something to give feedback
-  blockDevice = (id) => {
-    this.props.blockDevice(this.state.uuid, id);
-    this.setState((prevState, props) => ({
-      ignoredDevices: [...prevState.ignoredDevices, id]
-    }), this.local_BlockDevice());
+  ignoreDevice = (id) => {
+    // call to action to ignore in DB
+    console.log("ignore device", id)
+    this.props.ignoreDevice(this.state.uuid, id);
+
+    this.setLocalStore("ignoredDevices", [...this.props.ignoredDevices, id]);
    
   }
 
@@ -54,55 +49,17 @@ class HomeScreen extends Component {
     return formatted;
   }
   
-  local_BlockDevice = () => {
+  setLocalStore = async (item, data) => {
     try {
-      AsyncStorage.setItem("ignoredDevices", JSON.stringify(this.state.ignoredDevices));
+      await AsyncStorage.setItem(item, JSON.stringify(data));
     } catch (error) {
       console.log("Error saving data", error);
     }
-    console.log("ignoredDevices: ", this.state.ignoredDevices)
-  }
-  
-  // do this on app load add move to redux
-  local_LoadData = async () => {
-    try {
-      const ignored = await AsyncStorage.getItem('ignoredDevices');
-      let parsed = JSON.parse(ignored);
-      if (parsed !== null) {
-        console.log("We have data: ", parsed);
-        this.setState({ignoredDevices: parsed})
-      } else {
-        console.log("data was null");
-      }
-    } catch (error) {
-      console.log("Error saving data", error);
-    }
-  }
-
-  getTime = (timeStamp) => {
-    // update to isoblablaa asap
-    var date = new Date( timeStamp * 1000 );
-    // Hours part from the timestamp
-    var hours = date.getHours();
-    // Minutes part from the timestamp
-    var minutes = "0" + date.getMinutes();
-    // Seconds part from the timestamp
-    var seconds = "0" + date.getSeconds();
-    
-    // Will display time in 10:30:23 format
-    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-
-    return {
-      date,
-      hours,
-      minutes,
-      seconds,
-      formattedTime
-    }
+    console.log("local data: ", this.props.ignoredDevices)
   }
 
   getDeviceDetails = (scans) => {
-    console.log("setting device details")
+    console.log("setting device details");
     return (
         Object.values(scans).map((el, i) => {
           return (
@@ -120,63 +77,123 @@ class HomeScreen extends Component {
     )
   }
 
-  createCard = (data, el) => {
-    let deviceName = data.name || data.assignedName || "No Name";
-    let showDetails = false;
-    // console.log(el)
+  createLocationItems = (locations, id) => {
+    
+    let scans;
+    for ( let location in locations ) {
+      console.log(locations[location]);
+      scans = Object.values(locations[location].scans).map((scan, j) => {
+        let deviceName = scan.name || scan.assignedName || "No Name";
+        //let showDetails = false;
+        return (
+          <>
+            <CardItem bordered>
+            <Body>
+              <Grid>
+                <Col>
+                  { deviceName !== "No Name" ? <Text>{deviceName}</Text> : (
+                    <Item regular>
+                      <Input placeholder="No Name" onChangeText={(e) => this.assignNameHandler(e, id)}/>
+                    </Item>
+                  ) }
+                </Col>
+                <Col>{ deviceName !== "No Name" ? null : (
+                  <Button onPress={this.assignName}>
+                    <Text>Assign</Text>
+                  </Button>
+                ) }
+                </Col>
+              </Grid>
+            </Body>
+          </CardItem>
+          <CardItem bordered>
+              <Text>Unique Encounters: {Object.values(locations[location]).length}</Text>
+          </CardItem>
+          <CardItem footer bordered>
+                <Button onPress={() => {
+                  // showDetails = !showDetails;
+                  // this.props.navigation.navigate('Places', { data: locations[location].scans, id: id });
+                  this.props.navigation.navigate('Places', { data: locations, id: id });
+                }}>
+                  <Text>View Details</Text>    
+                </Button>
+          </CardItem>
+          </>
+        );
+      })
+    }
+    return scans;
+  }
+
+  getScan = (locations) => {
+    let scans;
+    for ( let location in locations ) {
+      scans = Object.values(locations[location][1].scans);
+    }
+    return scans;
+  }
+
+
+
+  createCard = (data, id) => {
+    let locations = Object.entries(data.locations);
+    let scans = this.getScan(locations);
+    let deviceName = scans[0].name || data.assignedName || "No Name";
+
     return (
-          <Card key={el}>
+          <Card key={id}>
             <CardItem header bordered>
             <Grid>
-              <Col><Text>{el}</Text></Col>
+              <Col><Text>{id}</Text></Col>
               <Col>
-                <Button onPress={() => this.blockDevice(el)}>
+                <Button onPress={() => this.ignoreDevice(id)}>
                   <Text>Ignore</Text>
                 </Button>
               </Col>
             </Grid>
             </CardItem>
             <CardItem bordered>
-              <Body>
-                <Grid>
-                  <Col>
-                    { deviceName !== "No Name" ? <Text>{deviceName}</Text> : (
-                      <Item regular>
-                        <Input placeholder="No Name" onChangeText={(e) => this.assignNameHandler(e, el)}/>
-                      </Item>
-                    ) }
-                  </Col>
-                  <Col>{ deviceName !== "No Name" ? null : (
-                    <Button onPress={this.assignName}>
-                      <Text>Assign</Text>
-                    </Button>
+            <Body>
+              <Grid>
+                <Col>
+                  { deviceName !== "No Name" ? <Text>{deviceName}</Text> : (
+                    <Item regular>
+                      <Input placeholder="No Name" onChangeText={(e) => this.assignNameHandler(e, id)}/>
+                    </Item>
                   ) }
-                  </Col>
-                </Grid>
-              </Body>
-            </CardItem>
-            <CardItem bordered>
-                <Text>Total Encounters: {Object.values(data.scans).length}</Text>
-            </CardItem>
-            
-            <CardItem footer bordered>
+                </Col>
+                <Col>{ deviceName !== "No Name" ? null : (
+                  <Button onPress={this.assignName}>
+                    <Text>Assign</Text>
+                  </Button>
+                ) }
+                </Col>
+              </Grid>
+            </Body>
+          </CardItem>
+          <CardItem bordered>
+              <Text>Total Encounters: {scans.length}</Text>
+          </CardItem>
+          <CardItem footer bordered>
                 <Button onPress={() => {
-                  showDetails = !showDetails;
-                  this.props.navigation.navigate('Places', { data: data, id: el });
+                  //showDetails = !showDetails;
+                  // this.props.navigation.navigate('Places', { data: locations[location].scans, id: id });
+                  this.props.navigation.navigate('Places', { data: locations, id: id });
                 }}>
                   <Text>View Details</Text>    
                 </Button>
-            </CardItem>
-          </Card>
+          </CardItem>
+         </Card>
       )
   };
 
   createCards = (devices) => {
     let cards = [];
     for ( let el in devices ) {
-      if (Object.keys(devices[el].scans).length > 1 ) {
+      // let locations = Object.keys(devices[el].locations).length;
+      // if (locations > 1 ) {
         cards.push(this.createCard(devices[el], el));
-      }
+      // }
     }
     return cards;
   }
@@ -208,18 +225,15 @@ const mapStateToProps = state => {
   return {
     isLoading: state.ui.isLoading,
     devices: state.devices.dbDevices,
-    location: state.location.location,
+    ignoredDevices: state.devices.ignoredDevices
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     getDevices: (uuid) => dispatch(getDevices(uuid)),
-    blockDevice: (uuid, deviceId) => blockDevice(uuid, deviceId),
+    ignoreDevice: (uuid, deviceId) => ignoreDevice(uuid, deviceId),
     setDeviceName: (uuid, deviceId, name) => setDeviceName(uuid, deviceId, name),
-    setDeviceDetails: (device) => setDeviceDetails(devices)
-    // onTryAuth: (authData, authMode) => dispatch(tryAuth(authData, authMode)),
-    // onAutoSignIn: () => dispatch(authAutoSignIn())
   };
 };
 

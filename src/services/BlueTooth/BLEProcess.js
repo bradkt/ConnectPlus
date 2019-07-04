@@ -4,6 +4,7 @@ import location, {isNewLocation} from "../../services/Location/Coordinates";
 import { updateDevices } from "../../store/actions";
 import { AsyncStorage } from 'react-native';
 import BLEservice from "./Bluetooth";
+import { getSpeed } from '../Location/Coordinates'
 import _ from "lodash/array";
 
 class BLEProcess {
@@ -12,7 +13,7 @@ class BLEProcess {
     }
   
     // state may eventually live in the reducer / firebase
-    bleState = {
+    state = {
         locationBaseScan: [],
         currentScan: [],
         ignoredDevices: [],
@@ -25,10 +26,9 @@ class BLEProcess {
         let _this = this;
 
         location().then(coords => {
-          this.bleState.prevLocation = coords;
+          this.state.prevLocation = coords;
         })
         .catch( err => console.log(err));
-
 
         bleJob = {
           jobKey: "BLE",
@@ -51,85 +51,101 @@ class BLEProcess {
         });
     }
 
-    localStore = async () => {
+    getLocalStore = async () => {
         try {
             const storedIgnored = await AsyncStorage.getItem('ignoredDevices');
-            let Ignored = JSON.parse(storedIgnored);
-            if (Ignored !== null) {
-              console.log("We have data: ", Ignored);
-              this.bleState.ignoredDevices = Ignored
+            let ignoredDevices = JSON.parse(storedIgnored);
+            if (ignoredDevices !== null) {
+              console.log("We have data: ", ignoredDevices);
+              this.state.ignoredDevices = ignoredDevices
             } else {
               console.log("data was null");
             }
           } catch (error) {
             console.log("Error saving data", error);
           }
-      }
+    }
 
     loadData = async () => {
-      let _this = this;
-
-      DeviceInfo.getMACAddress().then(mac => {
-        _this.bleState.myMacAddy = mac
-      });
-
-      this.localStore();
 
       location().then(coords => {
-        this.LocationHandler(this.bleState.prevLocation, coords );
+        this.LocationHandler(this.state.prevLocation, coords );
       })
       .catch( err => console.log(err));
+
+      DeviceInfo.getMACAddress().then(mac => {
+        this.state.myMacAddy = mac
+      });
+
+      this.getLocalStore();
       
       let scan = await this.ble.getCurrentBLEDevices();
   
-      this.bleState.currentScan = scan;
-      // this.bleState.currentScan = exampleLocationDevices;
+      this.state.currentScan = scan;
+      // this.state.currentScan = exampleLocationDevices;
     }
 
 
-    beginProcess = async () => {
-      console.log("bleprocess locationBaseScan", this.bleState.locationBaseScan);
-      await this.loadData();
+    beginProcess = async (force = false) => {
+
+      let speed = await this.checkSpeed();
+      let uniqueDevices = [];
+      let removeThese = [];
       
-      if(this.bleState.isNewLocation){
-        this.bleState.locationBaseScan = [];
-        console.log("new location reseting locationBaseScan");
-      }
-  
-      // filter devices and updatedb
-      let removeThese = [...this.bleState.locationBaseScan, ...this.bleState.ignoredDevices];
-      console.log("bleprocess remove these: ", removeThese);
-      let uniqueDevices = this.filterDevices(this.bleState.currentScan, removeThese);
-      console.log("bleprocess uniqueDevices: ", uniqueDevices);
-      updateDevices(this.bleState.myMacAddy, uniqueDevices, this.bleState.prevLocation);
-  
-      if(!this.bleState.isNewLocation){
-        this.bleState.locationBaseScan = [...this.bleState.locationBaseScan, ...uniqueDevices];
-        console.log("not new location adding current to locationBaseScan");
-      }
-    }
-
-    LocationHandler = (prev, curr) => {
-        let isNew = isNewLocation(prev, curr);
-        console.log("isNewLocation: ", isNew);
-        if (isNew) {
-            this.bleState.isNewLocation = true;
-        } else {
-            this.bleState.isNewLocation = false;
+      if ( speed < 6 || force ) {
+        console.log("running process");
+        await this.loadData();
+        
+        if(this.state.isNewLocation){
+          this.state.locationBaseScan = [];
+          console.log("new location reseting locationBaseScan");
         }
-        this.bleState.prevLocation = curr;
-    }
+    
+        // filter devices and updatedb
+        removeThese = [...this.state.locationBaseScan, ...this.state.ignoredDevices];
+        // console.log("bleprocess remove these: ", removeThese);
+        uniqueDevices = this.filterDevices(this.state.currentScan, removeThese);
+        // console.log("bleprocess uniqueDevices: ", uniqueDevices);
+        updateDevices(this.state.myMacAddy, uniqueDevices, this.state.prevLocation);
+    
+        if(!this.state.isNewLocation){
+          this.state.locationBaseScan = [...this.state.locationBaseScan, ...uniqueDevices];
+          console.log("not new location adding current to locationBaseScan");
+        }
+     } else {
+      console.log("speed not less than 6 or not forced");
+     }
 
-    filterDevices = (currDevices, removeThese) => {
-        let unique = _.differenceBy(currDevices, removeThese, 'id');
-        return unique;
-    }
+    return uniqueDevices;
+  }
 
-    stopBGProcess = () => {
-        console.log("stopping process");
-        // BackgroundTimer.clearInterval(this.intervalId);
-    }
+  LocationHandler = (prev, curr) => {
+      let isNew = isNewLocation(prev, curr);
+      console.log("isNewLocation: ", isNew);
+      if (isNew) {
+          this.state.isNewLocation = true;
+      } else {
+          this.state.isNewLocation = false;
+      }
+      this.state.prevLocation = curr;
+  }
 
+  filterDevices = (currDevices, removeThese) => {
+      let unique = _.differenceBy(currDevices, removeThese, 'id');
+      return unique;
+  }
+
+  checkSpeed = () => {
+    getSpeed().then(spd => {
+      console.log("profile spd: ", spd);
+      return spd;
+    });
+  }
+
+  stopBGProcess = () => {
+      console.log("stopping process");
+  }
+  
 }
   
 export default BLEProcess;

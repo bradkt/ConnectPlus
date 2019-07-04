@@ -19,6 +19,7 @@ import BLEProcess from "./src/services/BlueTooth/BLEProcess"
 export default class App extends React.Component {
 
   componentDidMount = () => {
+    navigator.geolocation.setRNConfiguration();
     let process = new BLEProcess();
     process.startUp();
   }

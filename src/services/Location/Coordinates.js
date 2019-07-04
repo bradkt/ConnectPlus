@@ -16,7 +16,6 @@ setLocationHandler = () => {
       },
       err => {
         console.log("error getting location", err);
-        // return { error: "Fetching the Position failed, please pick one manually!"};
         reject({ error: "Fetching the Position failed, please pick one manually!"});
       })
   });
@@ -26,7 +25,7 @@ export default setLocationHandler;
 
 export let getSpeed = () => {
   let settings = {
-    distanceFilter: 9,
+    distanceFilter: 5,
     enableHighAccuracy: true,
     timeout: 25000,
     maximumAge: 1000 * 60
@@ -35,11 +34,16 @@ export let getSpeed = () => {
       navigator.geolocation.watchPosition(pos => {
         // with distance filter set to 3 to get to a close approx. try:
         // (seepd + 2) * 2
-        resolve(pos.coords.speed);
+        if (pos.coords.speed > 1) {
+          resolve( ( pos.coords.speed + 2 ) * 2 );
+        } else {
+          resolve( pos.coords.speed );
+        }
+
       },
       err => {
-        console.log("error getting location", err);
-        reject({ error: "Fetching the Position failed, please pick one manually!"});
+        // console.log("error getting speed", err);
+        reject({ error: "Fetching the speen failed, are you moving? distanceFilter: " + settings.distanceFilter });
       },
         settings
       )

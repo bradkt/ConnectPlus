@@ -1,67 +1,114 @@
 import React, { Component } from "react";
-import { Container, Header, Content, Text, ListItem, Card, CardItem, List, Title, Label } from 'native-base';
+import { Container, Header, Content, Text, ListItem, Card, CardItem, List, Title, Label, Input, Button, Grid, Col } from 'native-base';
 import { Slider, StyleSheet } from "react-native";
+import { connect } from "react-redux";
+import { setKnownLocation } from "../../store/actions";
+import DeviceInfo from 'react-native-device-info';
 import moment from "moment";
 import Map from "../../components/Location/Map";
 
 class PlacesSreen extends Component {
+
+  state = {
+    locationName: "",
+    uuid: ""
+  }
+
+  componentDidMount = () => {
+    DeviceInfo.getMACAddress().then(mac => {
+      this.setState({ uuid: mac })
+    });
+  }
 
   toLocalTime = (ISOtime) => {
     let formatted = moment(ISOtime).format("dddd, MMMM D YYYY, h:mm a");
     return formatted;
   }
 
-  // -26 = few inches & -100 40 to 50 meters
-  createCard = (scan, id) => {
-    return (
-      <Card key={id}>
+  updateKnownLocation = (location) => {
+    if (this.state.locationName === "") {
+      return;
+    }
+
+    let data = {
+      name: this.state.locationName.toLowerCase(),
+      coords: location,
+    }
+    setKnownLocation(this.state.uuid, data);
+  }
+
+  handleLocationName = (e) => {
+    this.setState({ locationName: e });
+  }
+
+  createCard = (locations) => {
+    let cards = [];
+    for ( let loc in locations ) {
+      let location = Object.values(locations[loc][1].scans)[0].location;
+      let map = <Map location={location}></Map>;
+      let displayLocation = location.latitude.toString() + " : " + location.longitude.toString();
+  
+      return (
+        <Card key={locations[loc][1]}>
         <CardItem bordered>
           <List>
-            <Map location={scan.location}></Map>
-            <ListItem><Text>Location: {scan.location.latitude.toString() + " : " 
-            + scan.location.longitude.toString()}</Text></ListItem>
-
-            <ListItem><Text>Time: {this.toLocalTime(scan.ISOtime)}</Text></ListItem>
-            {/* <ListItem><Text>Distance: {scan.rssi < -71 ? "Near" : "Far"}</Text></ListItem> */}
+            {map}
+            <ListItem><Text>Location: {displayLocation}</Text></ListItem>
             <ListItem>
-              <Text>Far</Text>
-              <Slider
-                style={styles.slider}
-                step={1}
-                minimumValue={-100}
-                maximumValue={-26}
-                value={scan.rssi}
-                disabled
-              />
-              <Text>Near</Text>
+              <Grid>
+                <Col>
+                  <Input placeholder="No Name" onChangeText={(e) => this.handleLocationName(e)}/>
+                </Col>
+                <Col>
+                  <Button onPress={() => this.updateKnownLocation(location)}><Text>Assign</Text></Button>
+                </Col>
+              </Grid>
             </ListItem>
+          { Object.values(locations[loc][1].scans).map((scan, i) => {
+              return (
+                <ListItem key={"a-"+i}><Text>Time: {this.toLocalTime(scan.ISOtime)}</Text></ListItem>
+              )
+            })
+          }
+          {/* -26 = few inches & -100 40 to 50 meters */}
+          { Object.values(locations[loc][1].scans).map((scan, i) => {
+              return (
+                <ListItem key={"b-"+i}>
+                <Text>Far</Text>
+                <Slider
+                  style={styles.slider}
+                  step={1}
+                  minimumValue={-100}
+                  maximumValue={-26}
+                  value={scan.rssi}
+                  disabled
+                />
+                <Text>Near</Text>
+              </ListItem>
+              )
+            })
+          }
           </List>
         </CardItem>
       </Card>
-    )
-    
-  }
-
-  createCards = (data) => {
-    let cards = [];
-    for ( let scan in data.scans ) {
-      cards.push(this.createCard(data.scans[scan], scan));
+      );
     }
     return cards;
   }
 
   render() {
     const { navigation } = this.props;
-    const scans = navigation.getParam('data', null);
+    const locations = navigation.getParam('data', []);
     const id = navigation.getParam('id', null);
-
+    let idEL = id != null ? <Title>{id.toString()} Details</Title> : <Title>Please Select a Device</Title>
+    console.log(locations);
     return (
     <Container>
       <Header>
-          <Title>{id.toString()} Device Details</Title>
+          {idEL}
       </Header>
       <Content padder>
-        {this.createCards(scans)}
+        {this.createCard(locations)}
       </Content>
     </Container>
     )
@@ -75,4 +122,17 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PlacesSreen;
+
+const mapStateToProps = state => {
+  return {
+  //   profile: state.profile
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setKnownLocation: (uuid, data) => dispatch(setKnownLocation(uuid, data)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlacesSreen);

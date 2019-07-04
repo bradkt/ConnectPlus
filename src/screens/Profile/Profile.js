@@ -1,89 +1,103 @@
 import React, { Component } from "react";
 import { StyleSheet, FlatList, Text } from 'react-native';
-import { Button, Container, Header, Title, Content } from 'native-base';
+import { Button, Container, Header, Title, Content, Input, Item } from 'native-base';
 import { connect } from "react-redux";
-import AccelerometerSensor from "../../components/InternalDevice/Accelerometer";
-import { getSpeed, isNewLocation } from "../../services/Location/Coordinates";
-import setLocationHandler from "../../services/Location/Coordinates";
+import DeviceInfo from 'react-native-device-info';
 
 class ProfileSreen extends Component {
     constructor(props) {
       super(props);
   
       this.state = {
-        user: "",
+        profile: {},
         profileLoaded: false,
-        speed: 0,
-        isNewLocation: false, 
-        prevCoords: {}
+        username: "",
+        password:"",
+        isloggedIn: false
       }
     }
 
     componentDidMount = () => {
-      setLocationHandler().then(coords => {
-        this.setState({prevCoords: coords});
+      DeviceInfo.getMACAddress().then(mac => {
+        this.setState({ uuid: mac });
+        this.props.getUserProfile(mac);
+        this.props.getUserSettings(mac);
       });
     }
 
-    componentWillUnmount = () => {
-      navigator.geolocation.stopObserving();
+    userNameHandler = (e) => {
+      console.log(e);
+      this.setState({ username: e });
+      // this.setState((prevState, props) => ({
+      //   counter: prevState.counter + props.increment
+      // }));
+      
     }
 
-    checkSpeed = () => {
-      getSpeed().then(spd => {
-        console.log("profile spd: ", spd);
-        this.setState({speed: spd});
-      });
+    passwordHandler = (e) => {
+      console.log(e);
+      this.setState({ password: e });
     }
-    
-    checkUpdatedLocation = () => {
-      setLocationHandler().then(coords => {
-        let val = isNewLocation(this.state.prevCoords, coords);
-        this.setState({isNewLocation: val});
-        this.setState({prevCoords: coords});
-      });
+
+    handleLogin = () => {
+      if (this.state.username !== "" && this.state.password !== "") {
+        this.setState({ isloggedIn: true });
+      }
     }
 
     render() {
         return (
           <Container>
             <Header>
-                <Title>Accelerometer </Title>
+                <Title>{this.state.isloggedIn ? "Welcome" : "Please Log In" }</Title>
             </Header>
-            <Content padder>
-              <AccelerometerSensor/>
-              <Button onPress={this.checkSpeed}>
-                  <Text>Get Speed</Text>
-              </Button>
-              <Text>{this.state.speed.toString()}</Text>
-              <Button onPress={this.checkUpdatedLocation}>
-                  <Text>Is new Location</Text>
-              </Button>
-              <Text>{this.state.isNewLocation.toString()}</Text>
-            </Content>
+           
+              {!this.state.isloggedIn ? (
+                 <Content padder>
+                    <Text>This will be a welcome / login screen</Text>
+                    <Item regular>
+                      <Input placeholder="User Name" onChangeText={(e) => this.userNameHandler(e)}/>
+                    </Item>
+                    <Item regular>
+                      <Input placeholder="Password" type="password" onChangeText={(e) => this.passwordHandler(e)}/>
+                    </Item>
+                    <Button style={styles.loginBtn} onPress={() => {
+                        this.handleLogin()
+                      }}>
+                        <Text>Login In</Text>    
+                    </Button>
+                </Content>
+              ) : (
+                <Content padder>
+                  <Text>Your Profile here</Text>
+                </Content>
+              )}
           </Container>
         );
       }
 
 }
 const styles = StyleSheet.create({
-    searchButtonText: {
-      color: "orange",
+    loginBtn: {
+      color: "white",
+      width: 200
     }
   });
   
-  const mapStateToProps = state => {
-    return {
-    //   profile: state.profile
-    };
+const mapStateToProps = state => {
+  return {
+  //   profile: state.profile
   };
-  
-  const mapDispatchToProps = dispatch => {
-    return {
-    //   localname: () => dispatch(callaction())
+};
 
-    };
+const mapDispatchToProps = dispatch => {
+  return {
+    getUserProfile: (uuid) => dispatch(getUserProfile(uuid)),
+    getUserSettings: (uuid) => dispatch(getUserSettings(uuid)),
+  // onTryAuth: (authData, authMode) => dispatch(tryAuth(authData, authMode)),
+  // onAutoSignIn: () => dispatch(authAutoSignIn())
   };
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(ProfileSreen);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileSreen);
   
